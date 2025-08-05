@@ -31,18 +31,15 @@
     async function fetchScores() {
       const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
       const response = await fetch(url);
-      const text = await response.text();
+      const csvText = await response.text();
+      const rows = csvText.split('\n').map(row => row.split(','));
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-      const table = doc.querySelector('table'); // Locate the table in the HTML
+      // Debug: console.log(rows);
+      const team1Score = rows[2][1]; // Row 3, Column B (Port Total Score)
+      const team2Score = rows[2][5]; // Row 3, Column F (Starboard Total Score)
 
-      const rows = table.querySelectorAll('tr');
-      const team1 = rows[1].cells[1].textContent.trim(); // Row 2, Column B
-      const team2 = rows[1].cells[5].textContent.trim(); // Row 2, Column F
-
-      document.getElementById('team1').textContent = `Team Green: ${team1}`;
-      document.getElementById('team2').textContent = `Team Red: ${team2}`;
+      document.getElementById('team1').textContent = `Team Port: ${team1Score}`;
+      document.getElementById('team2').textContent = `Team Starboard: ${team2Score}`;
     }
 
     fetchScores();
