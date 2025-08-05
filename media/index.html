@@ -16,7 +16,11 @@
   </style>
 </head>
 <body>
-  <h1>🏆 Team Challenge Scoreboard</h1>
+  <div> <img src="logo.png" alt="Team Logo" style="height: 1em;">
+    <h1>KCRC Boathouse Battle</h1>
+    <img src="logo.png" alt="Team Logo" style="height: 1em;">
+  </div>
+  
   <div id="team1" class="team">Team Green: Loading...</div>
   <div id="team2" class="team">Team Red: Loading...</div>
 
@@ -25,10 +29,14 @@
       const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pubhtml?gid=1908909101&single=true';
       const response = await fetch(url);
       const text = await response.text();
-      const rows = text.split('\n').map(row => row.split(','));
 
-      const team1 = rows[1][1]; // Assuming row 2, column B
-      const team2 = rows[1][5]; // Assuming row 3, column B
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/html');
+      const table = doc.querySelector('table'); // Locate the table in the HTML
+
+      const rows = table.querySelectorAll('tr');
+      const team1 = rows[1].cells[1].textContent.trim(); // Row 2, Column B
+      const team2 = rows[1].cells[5].textContent.trim(); // Row 2, Column F
 
       document.getElementById('team1').textContent = `Team Green: ${team1}`;
       document.getElementById('team2').textContent = `Team Red: ${team2}`;
