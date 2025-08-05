@@ -36,8 +36,8 @@
       const rows = csvText.split('\n').map(row => row.split(','));
 
       // Debug: console.log(rows);
-      const team1Score = rows[2][1]; // Row 3, Column B (Port Total Score)
-      const team2Score = rows[2][5]; // Row 3, Column F (Starboard Total Score)
+      const team1Score = rows[1][1]; // Row 3, Column B (Port Total Score)
+      const team2Score = rows[1][5]; // Row 3, Column F (Starboard Total Score)
 
       document.getElementById('team1').textContent = `Team Port: ${team1Score}`;
       document.getElementById('team2').textContent = `Team Starboard: ${team2Score}`;
