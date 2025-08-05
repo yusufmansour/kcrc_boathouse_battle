@@ -16,9 +16,12 @@
   </style>
 </head>
 <body>
-  <div> <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 1em;">
-    <h1>KCRC Boathouse Battle</h1>
-    <div> <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 1em;">
+  <div> 
+    <h1>
+      <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 1em;">
+      KCRC Boathouse Battle
+      <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 1em;">
+    </h1>
   </div>
   
   <div id="team1" class="team">Team Green: Loading...</div>
@@ -26,7 +29,7 @@
 
   <script>
     async function fetchScores() {
-      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pubhtml?gid=1908909101&single=true';
+      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
       const response = await fetch(url);
       const text = await response.text();
 
