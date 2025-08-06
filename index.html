@@ -111,6 +111,13 @@
         const scaledPosition = (buoyPositions[index] / maxScore) * maxPixels;
         buoy.style.left = `${scaledPosition}px`;
       });
+
+      // Update buoy text positions dynamically
+      const buoyTexts = document.querySelectorAll('.race-track div[style*="font-size: 12px"]');
+      buoyTexts.forEach((text, index) => {
+        const scaledPosition = (buoyPositions[index] / maxScore) * maxPixels;
+        text.style.left = `${scaledPosition + 10}px`; // Adjust for text alignment
+      });
     }
 
     fetchScores();
