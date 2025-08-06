@@ -15,7 +15,7 @@
       margin: 20px 0;
     }
     .active-week {
-      background-color: yellow;
+      background-color: rgb(87, 98, 255);
       font-weight: bold;
     }
   </style>
@@ -94,8 +94,8 @@
 
   <script>
     function highlightWeekButton(week) {
-      // Remove active class from all buttons
-      document.querySelectorAll('button').forEach(button => button.classList.remove('active-week'));
+      // Remove active class from all week buttons
+      document.querySelectorAll('button[id^="week"]').forEach(button => button.classList.remove('active-week'));
       // Add active class to the selected week button
       document.getElementById(`week${week}`).classList.add('active-week');
     }
