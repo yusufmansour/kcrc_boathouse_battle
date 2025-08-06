@@ -57,13 +57,6 @@
   </style>
   
   <div class="race-track">
-    <!-- Score markers -->
-    <div style="position: absolute; left: 30px; top: 0; font-size: 12px;">0</div>
-    <div style="position: absolute; left: 130px; top: 0; font-size: 12px;">100</div>
-    <div style="position: absolute; left: 280px; top: 0; font-size: 12px;">250</div>
-    <div style="position: absolute; left: 530px; top: 0; font-size: 12px;">500</div>
-    <div style="position: absolute; left: 780px; top: 0; font-size: 12px;">750</div>
-    <div style="position: absolute; left: 1030px; top: 0; font-size: 12px;">1000</div>
 
     <!-- Buoys -->
     <div style="position: absolute; left: -0px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
@@ -121,8 +114,8 @@
       const maxPixels = trackWidth * 0.80; // Adjust for scaled track width
 
       // Calculate positions
-      const boat1Pos = 0.1* trackWidth + Math.max((portScore / maxScore) * maxPixels - 80, 0); // Adjust for boat width
-      const boat2Pos = 0.1* trackWidth + Math.max((starboardScore / maxScore) * maxPixels - 80, 0);
+      const boat1Pos = 0.1* trackWidth + Math.max((portScore / maxScore) * maxPixels - 150, 0); // Adjust for boat width
+      const boat2Pos = 0.1* trackWidth + Math.max((starboardScore / maxScore) * maxPixels - 150, 0);
 
       const buoyPositions = [0, 100, 250, 500, 750, 1000];
       const scaledBuoyPositions = buoyPositions.map(pos => 0.1* trackWidth + (pos / maxScore) * maxPixels);
@@ -150,14 +143,14 @@
       });
 
       // Add numbers to bottom buoys
-      const buoyNumbers = [-100, 0, 100, 250, 500, 750, 1000];
+      const buoyNumbers = [0, 0, 100, 250, 500, 750, 1000];
       const bottomBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 137px"]');
       bottomBuoysWithNumbers.forEach((buoy, index) => {
         const numberElement = document.createElement('div');
         numberElement.textContent = buoyNumbers[index];
         numberElement.style.position = 'absolute';
-        numberElement.style.left = `${20+ scaledBuoyPositions[index]}px`;
-        numberElement.style.top = '150px'; // Position below the buoy
+        numberElement.style.left = `${10+ scaledBuoyPositions[index]}px`;
+        numberElement.style.top = '145px'; // Position below the buoy
         numberElement.style.fontSize = '12px';
         document.querySelector('.race-track').appendChild(numberElement);
       });
@@ -166,7 +159,7 @@
         const numberElement = document.createElement('div');
         numberElement.textContent = buoyNumbers[index];
         numberElement.style.position = 'absolute';
-        numberElement.style.left = `${20+ scaledBuoyPositions[index]}px`;
+        numberElement.style.left = `${10+ scaledBuoyPositions[index]}px`;
         numberElement.style.top = '-10px'; // Position below the buoy
         numberElement.style.fontSize = '12px';
         document.querySelector('.race-track').appendChild(numberElement);
