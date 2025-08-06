@@ -110,6 +110,13 @@
       const trackWidth = window.innerWidth * 0.9; // Scale track width to fit within the screen
       document.querySelector('.race-track').style.width = `${trackWidth}px`;
 
+      const boatHeight = Math.max(window.innerHeight * 0.1, 50); // Scale boat height dynamically
+      const boatLength = Math.max(trackWidth * 0.1, 80); // Scale boat length dynamically
+      document.getElementById('boat1').style.height = `${boatHeight}px`;
+      document.getElementById('boat1').style.width = `${boatLength}px`;
+      document.getElementById('boat2').style.height = `${boatHeight}px`;
+      document.getElementById('boat2').style.width = `${boatLength}px`;
+
       const maxScore = 1000; // Avoid divide-by-zero
       const maxPixels = trackWidth * 0.80; // Adjust for scaled track width
 
