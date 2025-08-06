@@ -131,8 +131,14 @@
       document.getElementById('boat1').style.left = `${boat1Pos}px`;
       document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
+      // Align top and bottom buoys
       const buoys = document.querySelectorAll('.race-track div[style*="background: blue"]');
       buoys.forEach((buoy, index) => {
+        buoy.style.left = `${scaledBuoyPositions[index]}px`;
+      });
+
+      const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
+      bottomBuoys.forEach((buoy, index) => {
         buoy.style.left = `${scaledBuoyPositions[index]}px`;
       });
 
@@ -143,8 +149,8 @@
 
       // Add numbers to bottom buoys
       const bottomBuoyNumbers = [-100, 0, 100, 250, 500, 750, 1000];
-      const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
-      bottomBuoys.forEach((buoy, index) => {
+      const bottomBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 137px"]');
+      bottomBuoysWithNumbers.forEach((buoy, index) => {
         const numberElement = document.createElement('div');
         numberElement.textContent = bottomBuoyNumbers[index];
         numberElement.style.position = 'absolute';
