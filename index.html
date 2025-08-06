@@ -105,7 +105,7 @@
       document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
       // Update buoy positions dynamically
-      const buoyPositions = [100, 250, 500, 750, 1000];
+      const buoyPositions = [100, 250, 500, 750, 1000, 100, 250, 500, 750, 1000];
       const buoys = document.querySelectorAll('.race-track div[style*="background: blue"]');
       buoys.forEach((buoy, index) => {
         const scaledPosition = (buoyPositions[index] / maxScore) * maxPixels;
