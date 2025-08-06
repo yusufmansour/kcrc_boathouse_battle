@@ -81,47 +81,66 @@
   <div id="team1" class="team">Team Green: Loading...</div>
   <div id="team2" class="team">Team Red: Loading...</div>
 
+  <div>
+    <button onclick="fetchScores(1)">Week 1</button>
+    <button onclick="fetchScores(2)">Week 2</button>
+    <button onclick="fetchScores(3)">Week 3</button>
+    <button onclick="fetchScores(4)">Week 4</button>
+  </div>
+
   <script>
-    async function fetchScores() {
+    async function fetchScores(week) {
       const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
       const response = await fetch(url);
       const csvText = await response.text();
       const rows = csvText.split('\n').map(row => row.split(','));
 
-      const portScore = parseInt(rows[1][1], 10);  // Port Total Score
-      const starboardScore = parseInt(rows[1][5], 10);  // Starboard Total Score
-
-      document.getElementById('team1').textContent = `Team Port: ${portScore}`;
-      document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
+      const portScore = parseInt(rows[week][1], 10);  // Port Total Score for the week
+      const starboardScore = parseInt(rows[week][5], 10);  // Starboard Total Score for the week
 
       const trackWidth = document.querySelector('.race-track').offsetWidth;
       const maxScore = 1000; // Avoid divide-by-zero
-      const maxPixels = trackWidth - 100; // max movement range (track width - image width)
+      const maxPixels = trackWidth - 30; // max movement range (track width - image width)
 
+      // Calculate positions
       const boat1Pos = (portScore / maxScore) * maxPixels;
       const boat2Pos = (starboardScore / maxScore) * maxPixels;
 
+      const buoyPositions = [100, 250, 500, 750, 1000, 100, 250, 500, 750, 1000];
+      const scaledBuoyPositions = buoyPositions.map(pos => (pos / maxScore) * maxPixels);
+
+      // Render positions
+      document.getElementById('team1').textContent = `Team Port: ${portScore}`;
+      document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
       document.getElementById('boat1').style.left = `${boat1Pos}px`;
       document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
-      // Update buoy positions dynamically
-      const buoyPositions = [100, 250, 500, 750, 1000, 100, 250, 500, 750, 1000];
       const buoys = document.querySelectorAll('.race-track div[style*="background: blue"]');
       buoys.forEach((buoy, index) => {
-        const scaledPosition = (buoyPositions[index] / maxScore) * maxPixels;
-        buoy.style.left = `${scaledPosition}px`;
+        buoy.style.left = `${scaledBuoyPositions[index]}px`;
       });
 
-      // Update buoy text positions dynamically
       const buoyTexts = document.querySelectorAll('.race-track div[style*="font-size: 12px"]');
       buoyTexts.forEach((text, index) => {
-        const scaledPosition = (buoyPositions[index] / maxScore) * maxPixels;
-        text.style.left = `${scaledPosition + 10}px`; // Adjust for text alignment
+        text.style.left = `${scaledBuoyPositions[index]}px`; // Align with buoys
+      });
+
+      // Add numbers to bottom buoys
+      const bottomBuoyNumbers = [100, 250, 500, 750, 1000];
+      const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
+      bottomBuoys.forEach((buoy, index) => {
+        const numberElement = document.createElement('div');
+        numberElement.textContent = bottomBuoyNumbers[index];
+        numberElement.style.position = 'absolute';
+        numberElement.style.left = `${scaledBuoyPositions[index]}px`;
+        numberElement.style.top = '150px'; // Position below the buoy
+        numberElement.style.fontSize = '12px';
+        document.querySelector('.race-track').appendChild(numberElement);
       });
     }
 
-    fetchScores();
-    setInterval(fetchScores, 30000); // Update every 30 seconds
+    // Default to Week 1 on page load
+    fetchScores(1);
   </script>
 </body>
 </html>
