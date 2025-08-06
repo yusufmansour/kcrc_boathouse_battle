@@ -114,9 +114,11 @@
       const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
       const starboardScore = parseInt(rows[1][week+7], 10);  // Starboard Total Score for the week
 
-      const trackWidth = document.querySelector('.race-track').offsetWidth;
+      const trackWidth = window.innerWidth * 0.8; // Scale track width to fit within the screen
+      document.querySelector('.race-track').style.width = `${trackWidth}px`;
+
       const maxScore = 1000; // Avoid divide-by-zero
-      const maxPixels = trackWidth; // Adjust for extended track
+      const maxPixels = trackWidth; // Adjust for scaled track width
 
       // Calculate positions
       const boat1Pos = Math.max((portScore / maxScore) * maxPixels - 80, 0); // Adjust for boat width
