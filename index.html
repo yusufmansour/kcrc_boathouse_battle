@@ -114,7 +114,7 @@
       const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
       const starboardScore = parseInt(rows[1][week+7], 10);  // Starboard Total Score for the week
 
-      const trackWidth = window.innerWidth * 1.0; // Scale track width to fit within the screen
+      const trackWidth = window.innerWidth * 0.9; // Scale track width to fit within the screen
       document.querySelector('.race-track').style.width = `${trackWidth}px`;
 
       const maxScore = 1000; // Avoid divide-by-zero
@@ -150,14 +150,24 @@
       });
 
       // Add numbers to bottom buoys
-      const bottomBuoyNumbers = [-100, 0, 100, 250, 500, 750, 1000];
+      const buoyNumbers = [-100, 0, 100, 250, 500, 750, 1000];
       const bottomBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 137px"]');
       bottomBuoysWithNumbers.forEach((buoy, index) => {
         const numberElement = document.createElement('div');
-        numberElement.textContent = bottomBuoyNumbers[index];
+        numberElement.textContent = buoyNumbers[index];
         numberElement.style.position = 'absolute';
         numberElement.style.left = `${20+ scaledBuoyPositions[index]}px`;
         numberElement.style.top = '150px'; // Position below the buoy
+        numberElement.style.fontSize = '12px';
+        document.querySelector('.race-track').appendChild(numberElement);
+      });
+      const topBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 0px"]');
+      topBuoysWithNumbers.forEach((buoy, index) => {
+        const numberElement = document.createElement('div');
+        numberElement.textContent = buoyNumbers[index];
+        numberElement.style.position = 'absolute';
+        numberElement.style.left = `${20+ scaledBuoyPositions[index]}px`;
+        numberElement.style.top = '-10px'; // Position below the buoy
         numberElement.style.fontSize = '12px';
         document.querySelector('.race-track').appendChild(numberElement);
       });
