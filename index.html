@@ -32,7 +32,7 @@
   <style>
     .race-track {
       position: relative;
-      width: calc(90% + 50px); /* Extend track slightly beyond 1000 and before 0 */
+      width: 120%; /* Extend track by 20% before 0 and after 1000 */
       height: 150px;
       margin: 0 auto; /* Center the track */
       background: #f0f0f0;
@@ -63,7 +63,7 @@
     <div style="position: absolute; left: 280px; top: 0; font-size: 12px;">250</div>
     <div style="position: absolute; left: 530px; top: 0; font-size: 12px;">500</div>
     <div style="position: absolute; left: 780px; top: 0; font-size: 12px;">750</div>
-    <div style="position: absolute; left: 980px; top: 0; font-size: 12px;">1000</div>
+    <div style="position: absolute; left: 1030px; top: 0; font-size: 12px;">1000</div>
 
     <!-- Buoys -->
     <div style="position: absolute; left: -0px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
@@ -116,13 +116,13 @@
 
       const trackWidth = document.querySelector('.race-track').offsetWidth;
       const maxScore = 1000; // Avoid divide-by-zero
-      const maxPixels = trackWidth - 50; // Adjust for extended track
+      const maxPixels = trackWidth; // Adjust for extended track
 
       // Calculate positions
-      const boat1Pos = Math.max((portScore / maxScore) * maxPixels - 80, -40); // Adjust for boat width
-      const boat2Pos = Math.max((starboardScore / maxScore) * maxPixels - 80, -40);
+      const boat1Pos = Math.max((portScore / maxScore) * maxPixels - 80, 0); // Adjust for boat width
+      const boat2Pos = Math.max((starboardScore / maxScore) * maxPixels - 80, 0);
 
-      const buoyPositions = [0, 100, 250, 500, 750, 1000, 0, 100, 250, 500, 750, 1000];
+      const buoyPositions = [0, 100, 250, 500, 750, 1000];
       const scaledBuoyPositions = buoyPositions.map(pos => (pos / maxScore) * maxPixels);
 
       // Render positions
@@ -142,7 +142,7 @@
       });
 
       // Add numbers to bottom buoys
-      const bottomBuoyNumbers = [0, 100, 250, 500, 750, 1000];
+      const bottomBuoyNumbers = [-100, 0, 100, 250, 500, 750, 1000];
       const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
       bottomBuoys.forEach((buoy, index) => {
         const numberElement = document.createElement('div');
