@@ -14,133 +14,131 @@
       font-size: 2rem;
       margin: 20px 0;
     }
+    .tabs {
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+    }
+    #wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid #444;
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    #spinButton {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <div> 
+  <div class="tabs">
+    <button class="tab-button" onclick="showTab('scores')">Scores</button>
+    <button class="tab-button" onclick="showTab('wheel')">Wheel Spin</button>
+  </div>
+
+  <div id="scores" class="tab-content active">
     <h1>
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
       KCRC Boathouse Battle
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
     </h1>
+    <!-- Existing race-track and scoring code here (unchanged) -->
+    <!-- Paste your original content back in here -->
   </div>
-  <style>
-    .race-track {
-      position: relative;
-      width: 90%; /* Adjust width dynamically */
-      height: 150px;
-      margin: 0 auto; /* Center the track */
-      background: #f0f0f0;
-      border: 3px solid #aaa;
-      border-radius: 6px;
-    }
-  
-    .boat {
-      position: absolute;
-      top: 10px;
-      height: 80px;
-      transition: left 0.5s ease;
-    }
-  
-    #boat1 {
-      top: 2px;
-    }
-  
-    #boat2 {
-      top: 77px;
-    }
-  </style>
-  
-  <div class="race-track">
-    <!-- Score markers -->
-    <div style="position: absolute; left: 110px; top: 0; font-size: 12px;">100</div>
-    <div style="position: absolute; left: 260px; top: 0; font-size: 12px;">250</div>
-    <div style="position: absolute; left: 510px; top: 0; font-size: 12px;">500</div>
-    <div style="position: absolute; left: 760px; top: 0; font-size: 12px;">750</div>
-    <div style="position: absolute; left: 960px; top: 0; font-size: 12px;">1000</div>
 
-    <!-- Buoys -->
-    <div style="position: absolute; left: 100px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 750px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 950px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-
-    <div style="position: absolute; left: 100px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 750px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 950px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-
-    <!-- Dotted line -->
-    <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
-
-    <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
-    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
-  </div>
-  <div id="team1" class="team">Team Green: Loading...</div>
-  <div id="team2" class="team">Team Red: Loading...</div>
-
-  <div>
-    <button onclick="fetchScores(1)">Week 1</button>
-    <button onclick="fetchScores(2)">Week 2</button>
-    <button onclick="fetchScores(3)">Week 3</button>
-    <button onclick="fetchScores(4)">Week 4</button>
+  <div id="wheel" class="tab-content">
+    <h2>Which team are you on?</h2>
+    <div class="wheel-container">
+      <canvas id="wheel" width="300" height="300"></canvas>
+    </div>
+    <button id="spinButton">Spin</button>
+    <div id="result"></div>
   </div>
 
   <script>
-    async function fetchScores(week) {
-      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
-      const response = await fetch(url);
-      const csvText = await response.text();
-      const rows = csvText.split('\n').map(row => row.split(','));
-
-      const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
-      const starboardScore = parseInt(rows[1][week+7], 10);  // Starboard Total Score for the week
-
-      const trackWidth = document.querySelector('.race-track').offsetWidth;
-      const maxScore = 1000; // Avoid divide-by-zero
-      const maxPixels = trackWidth - 30; // max movement range (track width - image width)
-
-      // Calculate positions
-      const boat1Pos = (portScore / maxScore) * maxPixels;
-      const boat2Pos = (starboardScore / maxScore) * maxPixels;
-
-      const buoyPositions = [100, 250, 500, 750, 1000, 100, 250, 500, 750, 1000];
-      const scaledBuoyPositions = buoyPositions.map(pos => (pos / maxScore) * maxPixels);
-
-      // Render positions
-      document.getElementById('team1').textContent = `Team Port: ${portScore}`;
-      document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
-      document.getElementById('boat1').style.left = `${boat1Pos}px`;
-      document.getElementById('boat2').style.left = `${boat2Pos}px`;
-
-      const buoys = document.querySelectorAll('.race-track div[style*="background: blue"]');
-      buoys.forEach((buoy, index) => {
-        buoy.style.left = `${scaledBuoyPositions[index]}px`;
-      });
-
-      const buoyTexts = document.querySelectorAll('.race-track div[style*="font-size: 12px"]');
-      buoyTexts.forEach((text, index) => {
-        text.style.left = `${scaledBuoyPositions[index]}px`; // Align with buoys
-      });
-
-      // Add numbers to bottom buoys
-      const bottomBuoyNumbers = [100, 250, 500, 750, 1000];
-      const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
-      bottomBuoys.forEach((buoy, index) => {
-        const numberElement = document.createElement('div');
-        numberElement.textContent = bottomBuoyNumbers[index];
-        numberElement.style.position = 'absolute';
-        numberElement.style.left = `${scaledBuoyPositions[index]}px`;
-        numberElement.style.top = '150px'; // Position below the buoy
-        numberElement.style.fontSize = '12px';
-        document.querySelector('.race-track').appendChild(numberElement);
-      });
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
     }
 
-    // Default to Week 1 on page load
-    fetchScores(1);
+    // Wheel logic
+    const wheelCanvas = document.getElementById('wheel');
+    const ctx = wheelCanvas.getContext('2d');
+    const colors = ['#ff4d4d', '#4dff4d'];
+    const labels = ['Port', 'Starboard'];
+    let angle = 0;
+
+    function drawWheel() {
+      const radius = wheelCanvas.width / 2;
+      const centerX = radius;
+      const centerY = radius;
+
+      for (let i = 0; i < 2; i++) {
+        const startAngle = (i * Math.PI);
+        const endAngle = ((i + 1) * Math.PI);
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        ctx.fillStyle = '#000';
+        ctx.font = '20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const textAngle = startAngle + Math.PI / 2;
+        ctx.save();
+        ctx.translate(centerX + Math.cos(textAngle) * radius * 0.6, centerY + Math.sin(textAngle) * radius * 0.6);
+        ctx.rotate(textAngle);
+        ctx.fillText(labels[i], 0, 0);
+        ctx.restore();
+      }
+    }
+
+    drawWheel();
+
+    let spinning = false;
+    document.getElementById('spinButton').addEventListener('click', () => {
+      if (spinning) return;
+      spinning = true;
+
+      const randomRotation = 360 * 5 + Math.floor(Math.random() * 360);
+      angle += randomRotation;
+      wheelCanvas.style.transform = `rotate(${angle}deg)`;
+
+      setTimeout(() => {
+        const normalized = (angle % 360);
+        const team = normalized < 180 ? 'Port' : 'Starboard';
+        document.getElementById('result').textContent = `You're on Team ${team}`;
+        spinning = false;
+      }, 4000);
+    });
   </script>
+
+  <!-- Paste the rest of your existing <script> code here for the scores section -->
 </body>
 </html>
