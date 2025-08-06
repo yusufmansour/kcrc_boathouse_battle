@@ -114,8 +114,8 @@
       const maxPixels = trackWidth * 0.80; // Adjust for scaled track width
 
       // Calculate positions
-      const boat1Pos = 0.15* trackWidth + Math.max((portScore / maxScore) * maxPixels - 250, 0); // Adjust for boat width
-      const boat2Pos = 0.15* trackWidth + Math.max((starboardScore / maxScore) * maxPixels - 250, 0);
+      const boat1Pos = Math.max((portScore / maxScore) * maxPixels - 100, 0); // Adjust for boat width
+      const boat2Pos = Math.max((starboardScore / maxScore) * maxPixels - 100, 0);
 
       const buoyPositions = [0, 100, 250, 500, 750, 1000];
       const scaledBuoyPositions = buoyPositions.map(pos => 0.15* trackWidth + (pos / maxScore) * maxPixels);
