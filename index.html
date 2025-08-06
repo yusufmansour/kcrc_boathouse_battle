@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>KCRC Boathouse Battle Scores</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="media/boathouse_battle_icon.png">
   <style>
     body {
       font-family: sans-serif;
@@ -24,7 +24,38 @@
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
     </h1>
   </div>
+  <style>
+    .race-track {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      height: 100px;
+      margin: 50px auto;
+      background: #f0f0f0;
+      border: 3px solid #aaa;
+      border-radius: 12px;
+    }
   
+    .boat {
+      position: absolute;
+      top: 10px;
+      height: 80px;
+      transition: left 0.5s ease;
+    }
+  
+    #boat1 {
+      top: 10px;
+    }
+  
+    #boat2 {
+      top: 50px;
+    }
+  </style>
+  
+  <div class="race-track">
+    <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
+    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
+  </div>
   <div id="team1" class="team">Team Green: Loading...</div>
   <div id="team2" class="team">Team Red: Loading...</div>
 
@@ -35,12 +66,21 @@
       const csvText = await response.text();
       const rows = csvText.split('\n').map(row => row.split(','));
 
-      // Debug: console.log(rows);
-      const team1Score = rows[1][1]; // Row 3, Column B (Port Total Score)
-      const team2Score = rows[1][5]; // Row 3, Column F (Starboard Total Score)
+      const portScore = parseInt(rows[1][1], 10);  // Port Total Score
+      const starboardScore = parseInt(rows[1][5], 10);  // Starboard Total Score
 
-      document.getElementById('team1').textContent = `Team Port: ${team1Score}`;
-      document.getElementById('team2').textContent = `Team Starboard: ${team2Score}`;
+      document.getElementById('team1').textContent = `Team Port: ${portScore}`;
+      document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
+
+      // Move the boats based on score
+      const maxScore = Math.max(portScore, starboardScore, 1); // Avoid divide-by-zero
+      const maxPixels = 900; // max movement range (track width - image width)
+
+      const boat1Pos = (portScore / maxScore) * maxPixels;
+      const boat2Pos = (starboardScore / maxScore) * maxPixels;
+
+      document.getElementById('boat1').style.left = `${boat1Pos}px`;
+      document.getElementById('boat2').style.left = `${boat2Pos}px`;
     }
 
     fetchScores();
