@@ -126,8 +126,8 @@
       const scaledBuoyPositions = buoyPositions.map(pos => 0.15 * trackWidth + (pos / maxScore) * maxPixels);
 
       // Calculate positions so the right side of the boat aligns with the first buoy
-      const boat1Pos = scaledBuoyPositions[0] - boatLength; // Align right side of boat1 with first buoy
-      const boat2Pos = scaledBuoyPositions[0] - boatLength; // Align right side of boat2 with first buoy
+      const boat1Pos = scaledBuoyPositions[0] - boatLength + Math.max((portScore / maxScore) * maxPixels - 80, 0); // Align right side of boat1 with first buoy
+      const boat2Pos = scaledBuoyPositions[0] - boatLength + Math.max((portScore / maxScore) * maxPixels - 80, 0);// Align right side of boat2 with first buoy
 
       document.getElementById('team1').textContent = `Team Port: ${portScore}`;
       document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
