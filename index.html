@@ -14,6 +14,10 @@
       font-size: 2rem;
       margin: 20px 0;
     }
+    .active-week {
+      background-color: yellow;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -82,14 +86,22 @@
   <div id="team2" class="team">Team Red: Loading...</div>
 
   <div>
-    <button onclick="fetchScores(1)">Week 1</button>
-    <button onclick="fetchScores(2)">Week 2</button>
-    <button onclick="fetchScores(3)">Week 3</button>
-    <button onclick="fetchScores(4)">Week 4</button>
+    <button id="week1" onclick="fetchScores(1)">Week 1</button>
+    <button id="week2" onclick="fetchScores(2)">Week 2</button>
+    <button id="week3" onclick="fetchScores(3)">Week 3</button>
+    <button id="week4" onclick="fetchScores(4)">Week 4</button>
   </div>
 
   <script>
+    function highlightWeekButton(week) {
+      // Remove active class from all buttons
+      document.querySelectorAll('button').forEach(button => button.classList.remove('active-week'));
+      // Add active class to the selected week button
+      document.getElementById(`week${week}`).classList.add('active-week');
+    }
+
     async function fetchScores(week) {
+      highlightWeekButton(week); // Highlight the active week button
       const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
       const response = await fetch(url);
       const csvText = await response.text();
