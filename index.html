@@ -114,18 +114,18 @@
       const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
       const starboardScore = parseInt(rows[1][week+7], 10);  // Starboard Total Score for the week
 
-      const trackWidth = window.innerWidth * 0.8; // Scale track width to fit within the screen
+      const trackWidth = window.innerWidth * 1.0; // Scale track width to fit within the screen
       document.querySelector('.race-track').style.width = `${trackWidth}px`;
 
       const maxScore = 1000; // Avoid divide-by-zero
-      const maxPixels = trackWidth; // Adjust for scaled track width
+      const maxPixels = trackWidth * 0.80; // Adjust for scaled track width
 
       // Calculate positions
-      const boat1Pos = Math.max((portScore / maxScore) * maxPixels - 80, 0); // Adjust for boat width
-      const boat2Pos = Math.max((starboardScore / maxScore) * maxPixels - 80, 0);
+      const boat1Pos = 0.1* trackWidth + Math.max((portScore / maxScore) * maxPixels - 80, 0); // Adjust for boat width
+      const boat2Pos = 0.1* trackWidth + Math.max((starboardScore / maxScore) * maxPixels - 80, 0);
 
       const buoyPositions = [0, 100, 250, 500, 750, 1000];
-      const scaledBuoyPositions = buoyPositions.map(pos => (pos / maxScore) * maxPixels);
+      const scaledBuoyPositions = buoyPositions.map(pos => 0.1* trackWidth + (pos / maxScore) * maxPixels);
 
       // Render positions
       document.getElementById('team1').textContent = `Team Port: ${portScore}`;
@@ -156,7 +156,7 @@
         const numberElement = document.createElement('div');
         numberElement.textContent = bottomBuoyNumbers[index];
         numberElement.style.position = 'absolute';
-        numberElement.style.left = `${scaledBuoyPositions[index]}px`;
+        numberElement.style.left = `${20+ scaledBuoyPositions[index]}px`;
         numberElement.style.top = '150px'; // Position below the buoy
         numberElement.style.fontSize = '12px';
         document.querySelector('.race-track').appendChild(numberElement);
