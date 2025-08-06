@@ -95,8 +95,8 @@
       const csvText = await response.text();
       const rows = csvText.split('\n').map(row => row.split(','));
 
-      const portScore = parseInt(rows[week][1], 10);  // Port Total Score for the week
-      const starboardScore = parseInt(rows[week][5], 10);  // Starboard Total Score for the week
+      const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
+      const starboardScore = parseInt(rows[1][week+7], 10);  // Starboard Total Score for the week
 
       const trackWidth = document.querySelector('.race-track').offsetWidth;
       const maxScore = 1000; // Avoid divide-by-zero
