@@ -212,15 +212,17 @@
         points: parseInt(row[week + 7], 10) || 0
       })).filter(player => player.name).sort((a, b) => b.points - a.points).slice(0, 3);
 
+      const medals = ['🥇', '🥈', '🥉'];
+
       // Display top 3 players for Port
       const portTop3 = document.getElementById('portTop3');
       portTop3.innerHTML = `<h3>Port Leaderboard</h3>` +
-        portPlayers.map(player => `<p>${player.name}: ${player.points} points</p>`).join('');
+        portPlayers.map((player, index) => `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`).join('');
 
       // Display top 3 players for Starboard
       const starboardTop3 = document.getElementById('starboardTop3');
       starboardTop3.innerHTML = `<h3>Starboard Leaderboard</h3>` +
-        starboardPlayers.map(player => `<p>${player.name}: ${player.points} points</p>`).join('');
+        starboardPlayers.map((player, index) => `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`).join('');
     }
 
     // Default to Week 1 on page load
