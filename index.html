@@ -44,6 +44,15 @@
     #boat2 {
       top: 77px;
     }
+    .team-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .team-section {
+      width: 45%;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -77,11 +86,17 @@
     <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
     <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
   </div>
-  <div id="team1" class="team">Team Port: Loading...</div>
-  <div id="team2" class="team">Team Starboard: Loading...</div>
-
-  <div id="portTop3"></div>
-  <div id="starboardTop3"></div>
+  
+  <div class="team-container">
+    <div class="team-section">
+      <div id="team1" class="team">Team Port: Loading...</div>
+      <div id="portTop3"></div>
+    </div>
+    <div class="team-section">
+      <div id="team2" class="team">Team Starboard: Loading...</div>
+      <div id="starboardTop3"></div>
+    </div>
+  </div>
   
   <div>
     <button id="week1" onclick="fetchScores(1)">Week 1</button>
@@ -143,12 +158,12 @@
 
       // Display top 3 players for Port
       const portTop3 = document.getElementById('portTop3');
-      portTop3.innerHTML = `<h3>Top 3 Port Players (Week ${week})</h3>` +
+      portTop3.innerHTML = `<h3>Top 3 Port</h3>` +
         portPlayers.map(player => `<p>${player.name}: ${player.points} points</p>`).join('');
 
       // Display top 3 players for Starboard
       const starboardTop3 = document.getElementById('starboardTop3');
-      starboardTop3.innerHTML = `<h3>Top 3 Starboard Players (Week ${week})</h3>` +
+      starboardTop3.innerHTML = `<h3>Top 3 Starboard</h3>` +
         starboardPlayers.map(player => `<p>${player.name}: ${player.points} points</p>`).join('');
     }
 
