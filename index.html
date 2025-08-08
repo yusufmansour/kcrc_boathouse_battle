@@ -11,8 +11,8 @@
       padding: 50px;
     }
     .team {
-      font-size: 2rem;
-      margin: 20px 0;
+      font-size: 2.5rem; /* Increase font size for scores */
+      margin-bottom: 20px;
     }
     .active-week {
       background-color: rgb(87, 98, 255);
@@ -47,11 +47,15 @@
     .team-container {
       display: flex;
       justify-content: space-around;
-      margin-top: 20px;
+      align-items: center; /* Center align vertically */
+      margin-top: 50px;
     }
     .team-section {
       width: 45%;
-      text-align: left;
+      text-align: center; /* Center align text */
+    }
+    .leaderboard {
+      text-align: center; /* Center align leaderboard players */
     }
   </style>
 </head>
@@ -90,11 +94,11 @@
   <div class="team-container">
     <div class="team-section">
       <div id="team1" class="team">Team Port: Loading...</div>
-      <div id="portTop3"></div>
+      <div id="portTop3" class="leaderboard"></div>
     </div>
     <div class="team-section">
       <div id="team2" class="team">Team Starboard: Loading...</div>
-      <div id="starboardTop3"></div>
+      <div id="starboardTop3" class="leaderboard"></div>
     </div>
   </div>
   
@@ -133,17 +137,68 @@
       const maxScore = 1000; // Avoid divide-by-zero
       const maxPixels = trackWidth * 0.80; // Adjust for scaled track width
 
+      // Calculate positions
       const buoyPositions = [0, 100, 250, 500, 750, 1000];
       const scaledBuoyPositions = buoyPositions.map(pos => 0.15 * trackWidth + (pos / maxScore) * maxPixels);
 
-      const boat1Pos = scaledBuoyPositions[0] - boatLength + Math.max((portScore / maxScore) * maxPixels, 0);
-      const boat2Pos = scaledBuoyPositions[0] - boatLength + Math.max((starboardScore / maxScore) * maxPixels, 0);
+      // Calculate positions so the right side of the boat aligns with the first buoy
+      const boat1Pos = scaledBuoyPositions[0] - boatLength + Math.max((portScore / maxScore) * maxPixels, 0); // Align right side of boat1 with first buoy
+      const boat2Pos = scaledBuoyPositions[0] - boatLength + Math.max((starboardScore / maxScore) * maxPixels, 0);// Align right side of boat2 with first buoy
 
       document.getElementById('team1').textContent = `Team Port: ${portScore}`;
       document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
       document.getElementById('boat1').style.left = `${boat1Pos}px`;
       document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
+      // Align top and bottom buoys
+      const buoys = document.querySelectorAll('.race-track div[style*="background: blue"]');
+      buoys.forEach((buoy, index) => {
+        buoy.style.left = `${scaledBuoyPositions[index]}px`;
+      });
+
+      const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
+      bottomBuoys.forEach((buoy, index) => {
+        buoy.style.left = `${scaledBuoyPositions[index]}px`;
+      });
+
+      const buoyTexts = document.querySelectorAll('.race-track div[style*="font-size: 12px"]');
+      buoyTexts.forEach((text, index) => {
+        text.style.left = `${scaledBuoyPositions[index]}px`; // Align with buoys
+      });
+
+      // Update numbers for bottom buoys
+      const buoyNumbers = [0, 100, 250, 500, 750, 1000];
+      const bottomBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 137px"]');
+      bottomBuoysWithNumbers.forEach((buoy, index) => {
+        let numberElement = buoy.querySelector('.buoy-number');
+        if (!numberElement) {
+          numberElement = document.createElement('div');
+          numberElement.className = 'buoy-number';
+          buoy.appendChild(numberElement);
+        }
+        numberElement.textContent = buoyNumbers[index];
+        numberElement.style.position = 'absolute';
+        numberElement.style.left = `${10}px`; // Offset within the buoy
+        numberElement.style.top = '10px'; // Position inside the buoy
+        numberElement.style.fontSize = '12px';
+      });
+
+      // Update numbers for top buoys
+      const topBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 0px"]');
+      topBuoysWithNumbers.forEach((buoy, index) => {
+        let numberElement = buoy.querySelector('.buoy-number');
+        if (!numberElement) {
+          numberElement = document.createElement('div');
+          numberElement.className = 'buoy-number';
+          buoy.appendChild(numberElement);
+        }
+        numberElement.textContent = buoyNumbers[index];
+        numberElement.style.position = 'absolute';
+        numberElement.style.left = `${10}px`; // Offset within the buoy
+        numberElement.style.top = '-10px'; // Position above the buoy
+        numberElement.style.fontSize = '12px';
+      });
+    }
       // Extract top 3 players for Port
       const portPlayers = rows.slice(3).map(row => ({
         name: row[0],
@@ -158,12 +213,12 @@
 
       // Display top 3 players for Port
       const portTop3 = document.getElementById('portTop3');
-      portTop3.innerHTML = `<h3>Top 3 Port</h3>` +
+      portTop3.innerHTML = `<h3>Port Leaderboard</h3>` +
         portPlayers.map(player => `<p>${player.name}: ${player.points} points</p>`).join('');
 
       // Display top 3 players for Starboard
       const starboardTop3 = document.getElementById('starboardTop3');
-      starboardTop3.innerHTML = `<h3>Top 3 Starboard</h3>` +
+      starboardTop3.innerHTML = `<h3>Starboard Leaderboard</h3>` +
         starboardPlayers.map(player => `<p>${player.name}: ${player.points} points</p>`).join('');
     }
 
