@@ -119,7 +119,8 @@
 
     async function fetchScores(week) {
       highlightWeekButton(week); // Highlight the active week button
-      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
+      const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
+      const url = `${baseUrl}&_=${new Date().getTime()}`; // Add a timestamp to prevent caching
       const response = await fetch(url);
       const csvText = await response.text();
       const rows = csvText.split('\n').map(row => row.split(','));
