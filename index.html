@@ -78,16 +78,20 @@
       /* Center align leaderboard players */
     }
 
+
     .week-button {
       text-align: center;
       transition: background-color 0.2s ease;
-      white-space: nowrap;
+      white-space: normal;
       background-color: #f0f0f0;
       color: black;
+      line-height: 1.2em;
       border: 1px solid #ccc;
       font-weight: normal;
-      height: 100px;
+      height: 3em; 
       padding: 6px 12px;
+      vertical-align: middle;
+
     }
 
     /* Default/undecided */
@@ -115,7 +119,7 @@
     /* Selected (clicked/active) */
     .week-button.active-week {
       font-weight: bold;
-      outline: 2px solid #577aff; /* subtle outline so it still pops */
+      outline: 4px solid #577aff; /* subtle outline so it still pops */
     }
   </style>
 </head>
@@ -229,14 +233,14 @@
       let winnerText = `Week ${weekNum}`;
 
       if (winners[weekNum-1] === "port") {
-        btn.classList.add("winner-port");
-        winnerText = "👑 Port 👑"; // crown emoji
+          btn.classList.add("winner-port");
+          winnerText = "👑<br>Port"; // use <br> for line break
       } else if (winners[weekNum-1] === "starboard") {
-        btn.classList.add("winner-starboard");
-        winnerText = "👑 Starboard 👑"; // crown emoji
+          btn.classList.add("winner-starboard");
+          winnerText = "👑<br>Starboard"; // line break
       } else {
-        btn.classList.add("winner-undecided");
-        winnerText = `Week ${weekNum}`;
+          btn.classList.add("winner-undecided");
+          winnerText = `Week ${weekNum}`;
       }
 
       // Set the data attributes for hover switching
@@ -244,11 +248,12 @@
       btn.dataset.winnerLabel = winnerText;       // text normally
 
       // Initial text
-      btn.textContent = winnerText;
+      btn.innerHTML = winnerText;
+
 
       // Hover handlers
-      btn.onmouseenter = () => { btn.textContent = btn.dataset.weekLabel; };
-      btn.onmouseleave = () => { btn.textContent = btn.dataset.winnerLabel; };
+      btn.onmouseenter = () => { btn.innerHTML = btn.dataset.weekLabel; };
+      btn.onmouseleave = () => { btn.innerHTML = btn.dataset.winnerLabel; };
 
       // Tooltip remains Week X
       btn.title = `Week ${weekNum}`;
