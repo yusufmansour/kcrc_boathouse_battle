@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>KCRC Boathouse Battle Scores</title>
@@ -10,83 +11,175 @@
       text-align: center;
       padding: 50px;
     }
+
     .team {
-      font-size: 2.5rem; /* Increase font size for scores */
+      font-size: 2.5rem;
+      /* Increase font size for scores */
       margin-bottom: 20px;
     }
+
     .active-week {
       background-color: rgb(87, 98, 255);
       font-weight: bold;
-      color: white; /* Change text color to white */
+      color: white;
+      /* Change text color to white */
     }
+
     button {
-      font-size: 2em; /* Double the font size */
-      padding: 20px; /* Increase padding for larger buttons */
+      font-size: 2em;
+      /* Double the font size */
+      padding: 20px;
+      /* Increase padding for larger buttons */
     }
+
     .race-track {
       position: relative;
-      width: 120%; /* Extend track by 20% before 0 and after 1000 */
+      width: 120%;
+      /* Extend track by 20% before 0 and after 1000 */
       height: 150px;
-      margin: 0 auto; /* Center the track */
+      margin: 0 auto;
+      /* Center the track */
       background: #f0f0f0;
       border: 3px solid #aaa;
       border-radius: 6px;
     }
+
     .boat {
       position: absolute;
       top: 10px;
       height: 80px;
       transition: left 0.5s ease;
     }
+
     #boat1 {
       top: 2px;
     }
+
     #boat2 {
       top: 77px;
     }
+
     .team-container {
       display: flex;
       justify-content: space-around;
-      align-items: center; /* Center align vertically */
+      align-items: center;
+      /* Center align vertically */
       margin-top: 50px;
     }
+
     .team-section {
       width: 45%;
-      text-align: center; /* Center align text */
+      text-align: center;
+      /* Center align text */
     }
+
     .leaderboard {
-      text-align: center; /* Center align leaderboard players */
+      text-align: center;
+      /* Center align leaderboard players */
+    }
+
+    .week-button {
+      text-align: center;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+      background-color: #f0f0f0;
+      color: black;
+      border: 1px solid #ccc;
+      font-weight: normal;
+      height: 100px;
+      padding: 6px 12px;
+    }
+
+    /* Default/undecided */
+    .winner-undecided {
+      background-color: #f0f0f0;
+      color: black;
+    }
+
+    /* Port & Starboard winners */
+    .winner-port {
+      background-color: #b70000;
+      color: white;
+    }
+    .winner-starboard {
+      background-color: #167401;
+      color: white;
+    }
+
+    /* Hover — all buttons turn light blue */
+    .week-button:hover {
+      background-color: #d0e4ff; /* light blue */
+      color: black;
+    }
+
+    /* Selected (clicked/active) */
+    .week-button.active-week {
+      font-weight: bold;
+      outline: 2px solid #577aff; /* subtle outline so it still pops */
     }
   </style>
 </head>
+
 <body>
-  <div> 
+  <div>
     <h1>
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
       KCRC Boathouse Battle
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
     </h1>
   </div>
-  
+
   <div class="race-track">
     <!-- Update buoy elements to reflect the extended course -->
-    <div style="position: absolute; left: 0px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 100px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 750px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 1000px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 1250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 1500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
+    <div
+      style="position: absolute; left: 0px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 100px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 750px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 1000px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 1250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 1500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
 
-    <div style="position: absolute; left: 0px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 100px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 750px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 1000px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 1250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
-    <div style="position: absolute; left: 1500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;"></div>
+    <div
+      style="position: absolute; left: 0px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 100px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 750px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 1000px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 1250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
+    <div
+      style="position: absolute; left: 1500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
+    </div>
 
     <!-- Dotted line -->
     <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
@@ -94,7 +187,7 @@
     <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
     <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
   </div>
-  
+
   <div class="team-container">
     <div class="team-section">
       <div id="team1" class="team">Team Port: Loading...</div>
@@ -105,21 +198,81 @@
       <div id="starboardTop3" class="leaderboard"></div>
     </div>
   </div>
-  
+
   <div>
-    <button id="week1" onclick="fetchScores(1)">Week 1</button>
-    <button id="week2" onclick="fetchScores(2)">Week 2</button>
-    <button id="week3" onclick="fetchScores(3)">Week 3</button>
-    <button id="week4" onclick="fetchScores(4)">Week 4</button>
+    <button id="week1" class="week-button" onclick="fetchScores(1)">Week 1</button>
+    <button id="week2" class="week-button" onclick="fetchScores(2)">Week 2</button>
+    <button id="week3" class="week-button" onclick="fetchScores(3)">Week 3</button>
+    <button id="week4" class="week-button" onclick="fetchScores(4)">Week 4</button>
   </div>
+  <div id="winnerButtons" style="margin-top: 20px;"></div>
+
 
   <script>
+    const winners = ['port', 'starboard', '', ''];
+
     function highlightWeekButton(week) {
       // Remove active class from all week buttons
       document.querySelectorAll('button[id^="week"]').forEach(button => button.classList.remove('active-week'));
       // Add active class to the selected week button
       document.getElementById(`week${week}`).classList.add('active-week');
     }
+
+    function updateWeekButtons(winners) {
+    const buttons = document.querySelectorAll(".week-button");
+
+    buttons.forEach((btn, index) => {
+      const weekNum = index + 1;
+      btn.classList.remove("winner-port", "winner-starboard", "winner-undecided");
+
+      // Base text
+      let winnerText = `Week ${weekNum}`;
+
+      if (winners[weekNum-1] === "port") {
+        btn.classList.add("winner-port");
+        winnerText = "👑 Port 👑"; // crown emoji
+      } else if (winners[weekNum-1] === "starboard") {
+        btn.classList.add("winner-starboard");
+        winnerText = "👑 Starboard 👑"; // crown emoji
+      } else {
+        btn.classList.add("winner-undecided");
+        winnerText = `Week ${weekNum}`;
+      }
+
+      // Set the data attributes for hover switching
+      btn.dataset.weekLabel = `Week ${weekNum}`;   // text on hover
+      btn.dataset.winnerLabel = winnerText;       // text normally
+
+      // Initial text
+      btn.textContent = winnerText;
+
+      // Hover handlers
+      btn.onmouseenter = () => { btn.textContent = btn.dataset.weekLabel; };
+      btn.onmouseleave = () => { btn.textContent = btn.dataset.winnerLabel; };
+
+      // Tooltip remains Week X
+      btn.title = `Week ${weekNum}`;
+    });
+
+    equalizeButtonWidths();
+}
+
+
+      function equalizeButtonWidths() {
+        const buttons = document.querySelectorAll('.week-button');
+        let maxWidth = 0;
+
+        buttons.forEach(btn => {
+          // Measure the button with its current content
+          const width = btn.offsetWidth;
+          if (width > maxWidth) maxWidth = width;
+        });
+
+        // Lock all buttons to maxWidth
+        buttons.forEach(btn => {
+          btn.style.width = `${maxWidth}px`;
+        });
+      }
 
     async function fetchScores(week) {
       highlightWeekButton(week); // Highlight the active week button
@@ -131,6 +284,7 @@
 
       const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
       const starboardScore = parseInt(rows[1][week + 7], 10);  // Starboard Total Score for the week
+
 
       const trackWidth = window.innerWidth * 0.9; // Scale track width to fit within the screen
       document.querySelector('.race-track').style.width = `${trackWidth}px`;
@@ -227,6 +381,7 @@
 
     // Default to Week 1 on page load
     fetchScores(3);
+    updateWeekButtons(winners);
 
     // Rerun the query every 30 seconds
     setInterval(() => {
@@ -235,4 +390,5 @@
     }, 15000);
   </script>
 </body>
+
 </html>
