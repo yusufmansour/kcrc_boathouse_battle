@@ -226,7 +226,7 @@
     <button id="week1" class="week-button" onclick="fetchScores(1)">Week 1</button>
     <button id="week2" class="week-button" onclick="fetchScores(2)">Week 2</button>
     <button id="week3" class="week-button" onclick="fetchScores(3)">Week 3</button>
-    <button id="week5" class="week-button" onclick="fetchScores(5)">FINAL</button>
+    <button id="week5" class="week-button" onclick="fetchScores(5)">Week 4<br>FINAL</button>
   </div>
   <div id="winnerButtons" style="margin-top: 20px;"></div>
 
@@ -269,14 +269,14 @@
           btn.classList.add("winner-undecided");
           winnerText = `Week ${weekNum}`;
           if (weekNum === 4) {
-              winnerText = "FINAL";
+              winnerText = "Week 4<br>FINAL";
           }
       }
 
       // Set the data attributes for hover switching
       btn.dataset.weekLabel = `Week ${weekNum}`;   // text on hover
       if (weekNum === 4 && winners[weekNum-1] === "") {
-          btn.dataset.weekLabel = "FINAL"; // keep FINAL on hover if undecided
+          btn.dataset.weekLabel = "Week 4<br>FINAL"; // keep FINAL on hover if undecided
       }
       btn.dataset.winnerLabel = winnerText;       // text normally
 
@@ -291,7 +291,7 @@
       // Tooltip remains Week X
       btn.title = `Week ${weekNum}`;
       if (weekNum === 4) {
-        btn.title = "FINAL";
+        btn.title = "Week 4<br>FINAL";
       }
     });
 
