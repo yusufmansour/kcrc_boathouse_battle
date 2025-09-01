@@ -132,9 +132,16 @@
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
     </h1>
   </div>
-
   <div class="race-track">
-    <!-- Update buoy elements to reflect the extended course -->
+    <!-- Dotted line -->
+    <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
+  
+    <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
+    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
+  </div>
+<!--   
+  <div class="race-track">
+    Update buoy elements to reflect the extended course 
     <div
       style="position: absolute; left: 0px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
     </div>
@@ -195,13 +202,13 @@
     </div>
     <div
       style="position: absolute; left: 2000px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>    
+    </div>     -->
 
     <!-- Dotted line -->
-    <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
+    <!-- <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
 
     <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
-    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
+    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard"> -->
   </div>
 
   <div class="team-container">
@@ -219,13 +226,21 @@
     <button id="week1" class="week-button" onclick="fetchScores(1)">Week 1</button>
     <button id="week2" class="week-button" onclick="fetchScores(2)">Week 2</button>
     <button id="week3" class="week-button" onclick="fetchScores(3)">Week 3</button>
-    <button id="week4" class="week-button" onclick="fetchScores(4)">Week 4</button>
+    <button id="week5" class="week-button" onclick="fetchScores(5)">FINAL</button>
   </div>
   <div id="winnerButtons" style="margin-top: 20px;"></div>
 
 
   <script>
     const winners = ['port', 'starboard', '', ''];
+  // Per-week course configuration
+  // weekNumber: { minCourse: meters, buoySpacing: meters }
+  const weekSettings = {
+    1: { minCourse: 2000, buoySpacing: 250 },
+    2: { minCourse: 2000, buoySpacing: 250 },
+    3: { minCourse: 2000, buoySpacing: 250 },
+    5: { minCourse: 10000, buoySpacing: 1000 } // FINAL
+  };
 
     function highlightWeekButton(week) {
       // Remove active class from all week buttons
@@ -253,10 +268,16 @@
       } else {
           btn.classList.add("winner-undecided");
           winnerText = `Week ${weekNum}`;
+          if (weekNum === 4) {
+              winnerText = "FINAL";
+          }
       }
 
       // Set the data attributes for hover switching
       btn.dataset.weekLabel = `Week ${weekNum}`;   // text on hover
+      if (weekNum === 4 && winners[weekNum-1] === "") {
+          btn.dataset.weekLabel = "FINAL"; // keep FINAL on hover if undecided
+      }
       btn.dataset.winnerLabel = winnerText;       // text normally
 
       // Initial text
@@ -269,6 +290,9 @@
 
       // Tooltip remains Week X
       btn.title = `Week ${weekNum}`;
+      if (weekNum === 4) {
+        btn.title = "FINAL";
+      }
     });
 
     equalizeButtonWidths();
@@ -291,85 +315,96 @@
         });
       }
 
-    async function fetchScores(week) {
-      highlightWeekButton(week); // Highlight the active week button
-      const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
-      const url = `${baseUrl}&_=${new Date().getTime()}`; // Add a timestamp to prevent caching
-      const response = await fetch(url);
-      const csvText = await response.text();
-      const rows = csvText.split('\n').map(row => row.split(','));
+      async function fetchScores(week) {
+        highlightWeekButton(week);
 
-      const portScore = parseInt(rows[1][week], 10);  // Port Total Score for the week
-      const starboardScore = parseInt(rows[1][week + 7], 10);  // Starboard Total Score for the week
+        const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
+        const url = `${baseUrl}&_=${new Date().getTime()}`;
+        const response = await fetch(url);
+        const csvText = await response.text();
+        const rows = csvText.split('\n').map(row => row.split(','));
+
+        const portScore = parseInt(rows[1][week], 10);
+        const starboardScore = parseInt(rows[1][week + 7], 10);
+
+        const trackWidth = window.innerWidth * 0.9;
+        document.querySelector('.race-track').style.width = `${trackWidth}px`;
+
+        const boatLength = Math.max(trackWidth * 0.1, 80);
+        document.getElementById('boat1').style.width = `${boatLength}px`;
+        document.getElementById('boat2').style.width = `${boatLength}px`;
 
 
-      const trackWidth = window.innerWidth * 0.9; // Scale track width to fit within the screen
-      document.querySelector('.race-track').style.width = `${trackWidth}px`;
+// 👇 look up week settings (fallback if undefined)
+const { minCourse = 2000, buoySpacing = 250 } = weekSettings[week] || {};
 
-      const boatLength = Math.max(trackWidth * 0.1, 80); // Scale boat length dynamically
-      document.getElementById('boat1').style.width = `${boatLength}px`;
-      document.getElementById('boat2').style.width = `${boatLength}px`;
+// max needed score or minCourse, whichever is larger
+const rawMax = Math.max(portScore, starboardScore, minCourse);
 
-      const courseLength = 2000; // Variable to represent the final buoy
-      const maxScore = courseLength; // Use courseLength as the max score
-      const maxPixels = trackWidth * 0.80; // Adjust for scaled track width
+// round up to nearest buoy spacing
+const courseLength = Math.ceil(rawMax / buoySpacing) * buoySpacing;
 
-      // Dynamically generate buoy positions and numbers
-      const buoyPositions = [0, 100, 250, ...Array.from({ length: (courseLength - 250) / 250 }, (_, i) => 250 + 250 * (i + 1))];
-      const buoyNumbers = buoyPositions; // Buoy numbers match positions
-      const scaledBuoyPositions = buoyPositions.map(pos => 0.15 * trackWidth + (pos / maxScore) * maxPixels);
+// generate buoy distances dynamically
+const buoyDistances = [];
+for (let d = 0; d <= courseLength; d += buoySpacing) {
+  buoyDistances.push(d);
+}
 
-      // Calculate positions so the right side of the boat aligns with the first buoy
-      const boat1Pos = scaledBuoyPositions[0] - boatLength + Math.max((portScore / maxScore) * maxPixels, 0); // Align right side of boat1 with first buoy
-      const boat2Pos = scaledBuoyPositions[0] - boatLength + Math.max((starboardScore / maxScore) * maxPixels, 0);// Align right side of boat2 with first buoy
 
-      document.getElementById('team1').textContent = `Team Port: ${portScore}`;
-      document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
-      document.getElementById('boat1').style.left = `${boat1Pos}px`;
-      document.getElementById('boat2').style.left = `${boat2Pos}px`;
+const maxPixels = trackWidth * 0.8;
+const startOffset = trackWidth * 0.15;
 
-      // Align top and bottom buoys
-      const buoys = document.querySelectorAll('.race-track div[style*="background: blue"]');
-      buoys.forEach((buoy, index) => {
-        buoy.style.left = `${scaledBuoyPositions[index]}px`;
-      });
+// scale buoy distances to pixels
+const scaledBuoyPositions = buoyDistances.map(
+  d => startOffset + (d / courseLength) * maxPixels
+);
 
-      const bottomBuoys = document.querySelectorAll('.race-track div[style*="top: 137px"]');
-      bottomBuoys.forEach((buoy, index) => {
-        buoy.style.left = `${scaledBuoyPositions[index]}px`;
-      });
+// boat positions (align back of boat at 0)
+const boat1Pos = startOffset - boatLength + (portScore / courseLength) * maxPixels;
+const boat2Pos = startOffset - boatLength + (starboardScore / courseLength) * maxPixels;
 
-      // Update numbers for bottom buoys
-      const bottomBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 137px"]');
-      bottomBuoysWithNumbers.forEach((buoy, index) => {
-        let numberElement = buoy.querySelector('.buoy-number');
-        if (!numberElement) {
-          numberElement = document.createElement('div');
-          numberElement.className = 'buoy-number';
-          buoy.appendChild(numberElement);
-        }
-        numberElement.textContent = buoyNumbers[index];
-        numberElement.style.position = 'absolute';
-        numberElement.style.left = `${10}px`; // Offset within the buoy
-        numberElement.style.top = '10px'; // Position inside the buoy
-        numberElement.style.fontSize = '12px';
-      });
+document.getElementById('team1').textContent = `Team Port: ${portScore}`;
+document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
+document.getElementById('boat1').style.left = `${boat1Pos}px`;
+document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
-      // Update numbers for top buoys
-      const topBuoysWithNumbers = document.querySelectorAll('.race-track div[style*="top: 0px"]');
-      topBuoysWithNumbers.forEach((buoy, index) => {
-        let numberElement = buoy.querySelector('.buoy-number');
-        if (!numberElement) {
-          numberElement = document.createElement('div');
-          numberElement.className = 'buoy-number';
-          buoy.appendChild(numberElement);
-        }
-        numberElement.textContent = buoyNumbers[index];
-        numberElement.style.position = 'absolute';
-        numberElement.style.left = `${10}px`; // Offset within the buoy
-        numberElement.style.top = '-10px'; // Position above the buoy
-        numberElement.style.fontSize = '12px';
-      });
+// === NEW: regenerate buoys ===
+const raceTrack = document.querySelector('.race-track');
+
+// remove old buoys (but keep boats + dashed line)
+raceTrack.querySelectorAll('.buoy').forEach(b => b.remove());
+
+// create new buoys
+scaledBuoyPositions.forEach((x, i) => {
+  // top buoy
+  const top = document.createElement('div');
+  top.className = 'buoy';
+  top.style.position = 'absolute';
+  top.style.left = `${x}px`;
+  top.style.top = '0px';
+  top.style.width = '10px';
+  top.style.height = '10px';
+  top.style.background = 'blue';
+  top.style.borderRadius = '50%';
+
+  // number label above
+  const topLabel = document.createElement('div');
+  topLabel.textContent = buoyDistances[i];
+  topLabel.style.position = 'absolute';
+  topLabel.style.left = '12px';
+  topLabel.style.top = '-12px';
+  topLabel.style.fontSize = '12px';
+  top.appendChild(topLabel);
+
+  raceTrack.appendChild(top);
+
+  // bottom buoy
+  const bottom = top.cloneNode(true);
+  bottom.style.top = '137px';
+  const bottomLabel = bottom.querySelector('div');
+  bottomLabel.style.top = '12px'; // inside buoy
+  raceTrack.appendChild(bottom);
+});
 
       // Extract top 3 players for Port
       const portPlayers = rows.slice(3).map(row => ({
