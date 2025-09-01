@@ -88,7 +88,7 @@
       line-height: 1.2em;
       border: 1px solid #ccc;
       font-weight: normal;
-      height: 3em; 
+      height: 3em;
       padding: 6px 12px;
       vertical-align: middle;
 
@@ -105,6 +105,7 @@
       background-color: #b70000;
       color: white;
     }
+
     .winner-starboard {
       background-color: #167401;
       color: white;
@@ -112,14 +113,16 @@
 
     /* Hover — all buttons turn light blue */
     .week-button:hover {
-      background-color: #d0e4ff; /* light blue */
+      background-color: #d0e4ff;
+      /* light blue */
       color: black;
     }
 
     /* Selected (clicked/active) */
     .week-button.active-week {
       font-weight: bold;
-      outline: 4px solid #577aff; /* subtle outline so it still pops */
+      outline: 4px solid #577aff;
+      /* subtle outline so it still pops */
     }
   </style>
 </head>
@@ -135,80 +138,10 @@
   <div class="race-track">
     <!-- Dotted line -->
     <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
-  
+
     <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
     <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
   </div>
-<!--   
-  <div class="race-track">
-    Update buoy elements to reflect the extended course 
-    <div
-      style="position: absolute; left: 0px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 100px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 750px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1000px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1250px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1500px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1750px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 2000px; top: 0px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-
-    <div
-      style="position: absolute; left: 0px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 100px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 750px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1000px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1250px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1500px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 1750px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>
-    <div
-      style="position: absolute; left: 2000px; top: 137px; width: 10px; height: 10px; background: blue; border-radius: 50%;">
-    </div>     -->
-
-    <!-- Dotted line -->
-    <!-- <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
-
-    <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
-    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard"> -->
   </div>
 
   <div class="team-container">
@@ -233,14 +166,14 @@
 
   <script>
     const winners = ['port', 'starboard', 'starboard', ''];
-  // Per-week course configuration
-  // weekNumber: { minCourse: meters, buoySpacing: meters }
-  const weekSettings = {
-    1: { minCourse: 2000, buoySpacing: 250 },
-    2: { minCourse: 2000, buoySpacing: 250 },
-    3: { minCourse: 2000, buoySpacing: 250 },
-    5: { minCourse: 10000, buoySpacing: 1000 } // FINAL
-  };
+    // Per-week course configuration
+    // weekNumber: { minCourse: meters, buoySpacing: meters }
+    const weekSettings = {
+      1: { minCourse: 2000, buoySpacing: 250 },
+      2: { minCourse: 2000, buoySpacing: 250 },
+      3: { minCourse: 2000, buoySpacing: 250 },
+      5: { minCourse: 10000, buoySpacing: 1000 } // FINAL
+    };
 
     function highlightWeekButton(week) {
       // Remove active class from all week buttons
@@ -250,173 +183,226 @@
     }
 
     function updateWeekButtons(winners) {
-    const buttons = document.querySelectorAll(".week-button");
+      const buttons = document.querySelectorAll(".week-button");
 
-    buttons.forEach((btn, index) => {
-      const weekNum = index + 1;
-      btn.classList.remove("winner-port", "winner-starboard", "winner-undecided");
+      buttons.forEach((btn, index) => {
+        const weekNum = index + 1;
+        btn.classList.remove("winner-port", "winner-starboard", "winner-undecided");
 
-      // Base text
-      let winnerText = `Week ${weekNum}`;
+        // Base text
+        let winnerText = `Week ${weekNum}`;
 
-      if (winners[weekNum-1] === "port") {
+        if (winners[weekNum - 1] === "port") {
           btn.classList.add("winner-port");
           winnerText = "👑<br>Port"; // use <br> for line break
-      } else if (winners[weekNum-1] === "starboard") {
+        } else if (winners[weekNum - 1] === "starboard") {
           btn.classList.add("winner-starboard");
           winnerText = "👑<br>Starboard"; // line break
-      } else {
+        } else {
           btn.classList.add("winner-undecided");
           winnerText = `Week ${weekNum}`;
           if (weekNum === 4) {
-              winnerText = "Week 4<br>FINAL";
+            winnerText = "Week 4<br>FINAL";
           }
-      }
+        }
 
-      // Set the data attributes for hover switching
-      btn.dataset.weekLabel = `Week ${weekNum}`;   // text on hover
-      if (weekNum === 4 && winners[weekNum-1] === "") {
+        // Set the data attributes for hover switching
+        btn.dataset.weekLabel = `Week ${weekNum}`;   // text on hover
+        if (weekNum === 4 && winners[weekNum - 1] === "") {
           btn.dataset.weekLabel = "Week 4<br>FINAL"; // keep FINAL on hover if undecided
+        }
+        btn.dataset.winnerLabel = winnerText;       // text normally
+
+        // Initial text
+        btn.innerHTML = winnerText;
+
+
+        // Hover handlers
+        btn.onmouseenter = () => { btn.innerHTML = btn.dataset.weekLabel; };
+        btn.onmouseleave = () => { btn.innerHTML = btn.dataset.winnerLabel; };
+
+        // Tooltip remains Week X
+        btn.title = `Week ${weekNum}`;
+        if (weekNum === 4) {
+          btn.title = "Week 4<br>FINAL";
+        }
+      });
+
+      equalizeButtonWidths();
+    }
+
+
+    function equalizeButtonWidths() {
+      const buttons = document.querySelectorAll('.week-button');
+      let maxWidth = 0;
+
+      buttons.forEach(btn => {
+        // Measure the button with its current content
+        const width = btn.offsetWidth;
+        if (width > maxWidth) maxWidth = width;
+      });
+
+      // Lock all buttons to maxWidth
+      buttons.forEach(btn => {
+        btn.style.width = `${maxWidth}px`;
+      });
+    }
+
+    async function fetchScores(week) {
+      highlightWeekButton(week);
+
+      const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
+      const url = `${baseUrl}&_=${new Date().getTime()}`;
+      const response = await fetch(url);
+      const csvText = await response.text();
+      const rows = csvText.split('\n').map(row => row.split(','));
+
+      const portScore = parseInt(rows[1][week], 10);
+      const starboardScore = parseInt(rows[1][week + 7], 10);
+      let displayPort = portScore;
+      let displayStarboard = starboardScore;
+      let portRange = [portScore, portScore];
+      let starboardRange = [starboardScore, starboardScore];
+
+      if (week === 5) {
+        // Round down to nearest 100
+        const portLow = Math.floor(portScore / 100) * 100;
+        const starLow = Math.floor(starboardScore / 100) * 100;
+
+        // Define ranges
+        portRange = [portLow, portLow + 99];
+        starboardRange = [starLow, starLow + 99];
+
+        // Obscured text
+        displayPort = `${Math.floor(portScore / 100)}??`;
+        displayStarboard = `${Math.floor(starboardScore / 100)}??`;
       }
-      btn.dataset.winnerLabel = winnerText;       // text normally
+      console.log(`Week ${week} - Port: ${portScore} (${portRange[0]}-${portRange[1]}), Starboard: ${starboardScore} (${starboardRange[0]}-${starboardRange[1]})`);
+      console.log(`Display - Port: ${displayPort}, Starboard: ${displayStarboard}`);
+      document.getElementById('team1').textContent = `Team Port: ${displayPort}`;
+      document.getElementById('team2').textContent = `Team Starboard: ${displayStarboard}`;
+      const trackWidth = window.innerWidth * 0.9;
+      document.querySelector('.race-track').style.width = `${trackWidth}px`;
 
-      // Initial text
-      btn.innerHTML = winnerText;
-
-
-      // Hover handlers
-      btn.onmouseenter = () => { btn.innerHTML = btn.dataset.weekLabel; };
-      btn.onmouseleave = () => { btn.innerHTML = btn.dataset.winnerLabel; };
-
-      // Tooltip remains Week X
-      btn.title = `Week ${weekNum}`;
-      if (weekNum === 4) {
-        btn.title = "Week 4<br>FINAL";
-      }
-    });
-
-    equalizeButtonWidths();
-}
+      const boatLength = Math.max(trackWidth * 0.1, 80);
+      document.getElementById('boat1').style.width = `${boatLength}px`;
+      document.getElementById('boat2').style.width = `${boatLength}px`;
 
 
-      function equalizeButtonWidths() {
-        const buttons = document.querySelectorAll('.week-button');
-        let maxWidth = 0;
+      // 👇 look up week settings (fallback if undefined)
+      const { minCourse = 2000, buoySpacing = 250 } = weekSettings[week] || {};
 
-        buttons.forEach(btn => {
-          // Measure the button with its current content
-          const width = btn.offsetWidth;
-          if (width > maxWidth) maxWidth = width;
-        });
+      // max needed score or minCourse, whichever is larger
+      const rawMax = Math.max(portScore, starboardScore, minCourse);
 
-        // Lock all buttons to maxWidth
-        buttons.forEach(btn => {
-          btn.style.width = `${maxWidth}px`;
-        });
+      // round up to nearest buoy spacing
+      const courseLength = Math.ceil(rawMax / buoySpacing) * buoySpacing;
+
+      // generate buoy distances dynamically
+      const buoyDistances = [];
+      for (let d = 0; d <= courseLength; d += buoySpacing) {
+        buoyDistances.push(d);
       }
 
-      async function fetchScores(week) {
-        highlightWeekButton(week);
 
-        const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
-        const url = `${baseUrl}&_=${new Date().getTime()}`;
-        const response = await fetch(url);
-        const csvText = await response.text();
-        const rows = csvText.split('\n').map(row => row.split(','));
+      const maxPixels = trackWidth * 0.8;
+      const startOffset = trackWidth * 0.15;
 
-        const portScore = parseInt(rows[1][week], 10);
-        const starboardScore = parseInt(rows[1][week + 7], 10);
+      // scale buoy distances to pixels
+      const scaledBuoyPositions = buoyDistances.map(
+        d => startOffset + (d / courseLength) * maxPixels
+      );
 
-        const trackWidth = window.innerWidth * 0.9;
-        document.querySelector('.race-track').style.width = `${trackWidth}px`;
+      function getBoatPixel(score, courseLength, maxPixels, startOffset, boatLength) {
+        return startOffset - boatLength + (score / courseLength) * maxPixels;
+      }
 
-        const boatLength = Math.max(trackWidth * 0.1, 80);
-        document.getElementById('boat1').style.width = `${boatLength}px`;
-        document.getElementById('boat2').style.width = `${boatLength}px`;
+      let boat1Pos = getBoatPixel(portScore, courseLength, maxPixels, startOffset, boatLength);
+      let boat2Pos = getBoatPixel(starboardScore, courseLength, maxPixels, startOffset, boatLength);
+
+      if (week === 5) {
+        // redefine boats to drift between ranges
+        const [portLow, portHigh] = portRange;
+        const [starLow, starHigh] = starboardRange;
+
+        const portLowPx = getBoatPixel(portLow, courseLength, maxPixels, startOffset, boatLength);
+        const portHighPx = getBoatPixel(portHigh, courseLength, maxPixels, startOffset, boatLength);
+
+        const starLowPx = getBoatPixel(starLow, courseLength, maxPixels, startOffset, boatLength);
+        const starHighPx = getBoatPixel(starHigh, courseLength, maxPixels, startOffset, boatLength);
+
+        // smooth oscillation using sine wave
+        const now = Date.now() / 1000;
+        const t = (Math.sin(now) + 1) / 2; // 0 → 1 oscillation
+
+        boat1Pos = portLowPx + t * (portHighPx - portLowPx);
+        boat2Pos = starLowPx + (1 - t) * (starHighPx - starLowPx); // offset motion
+      }
 
 
-// 👇 look up week settings (fallback if undefined)
-const { minCourse = 2000, buoySpacing = 250 } = weekSettings[week] || {};
-
-// max needed score or minCourse, whichever is larger
-const rawMax = Math.max(portScore, starboardScore, minCourse);
-
-// round up to nearest buoy spacing
-const courseLength = Math.ceil(rawMax / buoySpacing) * buoySpacing;
-
-// generate buoy distances dynamically
-const buoyDistances = [];
-for (let d = 0; d <= courseLength; d += buoySpacing) {
-  buoyDistances.push(d);
-}
-
-
-const maxPixels = trackWidth * 0.8;
-const startOffset = trackWidth * 0.15;
-
-// scale buoy distances to pixels
-const scaledBuoyPositions = buoyDistances.map(
-  d => startOffset + (d / courseLength) * maxPixels
-);
-
-// boat positions (align back of boat at 0)
-const boat1Pos = startOffset - boatLength + (portScore / courseLength) * maxPixels;
-const boat2Pos = startOffset - boatLength + (starboardScore / courseLength) * maxPixels;
-
-document.getElementById('team1').textContent = `Team Port: ${portScore}`;
-document.getElementById('team2').textContent = `Team Starboard: ${starboardScore}`;
 document.getElementById('boat1').style.left = `${boat1Pos}px`;
 document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
-// === NEW: regenerate buoys ===
-const raceTrack = document.querySelector('.race-track');
 
-// remove old buoys (but keep boats + dashed line)
-raceTrack.querySelectorAll('.buoy').forEach(b => b.remove());
+      // === NEW: regenerate buoys ===
+      const raceTrack = document.querySelector('.race-track');
 
-// create new buoys
-scaledBuoyPositions.forEach((x, i) => {
-  // top buoy
-  const top = document.createElement('div');
-  top.className = 'buoy';
-  top.style.position = 'absolute';
-  top.style.left = `${x}px`;
-  top.style.top = '0px';
-  top.style.width = '10px';
-  top.style.height = '10px';
-  top.style.background = 'blue';
-  top.style.borderRadius = '50%';
+      // remove old buoys (but keep boats + dashed line)
+      raceTrack.querySelectorAll('.buoy').forEach(b => b.remove());
 
-  // number label above
-  const topLabel = document.createElement('div');
-  topLabel.textContent = buoyDistances[i];
-  topLabel.style.position = 'absolute';
-  topLabel.style.left = '12px';
-  topLabel.style.top = '-12px';
-  topLabel.style.fontSize = '12px';
-  top.appendChild(topLabel);
+      // create new buoys
+      scaledBuoyPositions.forEach((x, i) => {
+        // top buoy
+        const top = document.createElement('div');
+        top.className = 'buoy';
+        top.style.position = 'absolute';
+        top.style.left = `${x}px`;
+        top.style.top = '0px';
+        top.style.width = '10px';
+        top.style.height = '10px';
+        top.style.background = 'blue';
+        top.style.borderRadius = '50%';
 
-  raceTrack.appendChild(top);
+        // number label above
+        const topLabel = document.createElement('div');
+        topLabel.textContent = buoyDistances[i];
+        topLabel.style.position = 'absolute';
+        topLabel.style.left = '12px';
+        topLabel.style.top = '-12px';
+        topLabel.style.fontSize = '12px';
+        top.appendChild(topLabel);
 
-  // bottom buoy
-  const bottom = top.cloneNode(true);
-  bottom.style.top = '137px';
-  const bottomLabel = bottom.querySelector('div');
-  bottomLabel.style.top = '12px'; // inside buoy
-  raceTrack.appendChild(bottom);
-});
+        raceTrack.appendChild(top);
+
+        // bottom buoy
+        const bottom = top.cloneNode(true);
+        bottom.style.top = '137px';
+        const bottomLabel = bottom.querySelector('div');
+        bottomLabel.style.top = '12px'; // inside buoy
+        raceTrack.appendChild(bottom);
+      });
 
       // Extract top 3 players for Port
-      const portPlayers = rows.slice(3).map(row => ({
+      let portPlayers = rows.slice(3).map(row => ({
         name: row[0],
         points: parseInt(row[week], 10) || 0
       })).filter(player => player.name).sort((a, b) => b.points - a.points).slice(0, 3);
 
       // Extract top 3 players for Starboard
-      const starboardPlayers = rows.slice(3).map(row => ({
+      let starboardPlayers = rows.slice(3).map(row => ({
         name: row[7],
         points: parseInt(row[week + 7], 10) || 0
       })).filter(player => player.name).sort((a, b) => b.points - a.points).slice(0, 3);
+      if (week === 5) {
+        portPlayers = portPlayers.map(p => ({
+          ...p,
+          points: `${Math.floor(p.points / 100)}??`
+        }));
+        starboardPlayers = starboardPlayers.map(p => ({
+          ...p,
+          points: `${Math.floor(p.points / 100)}??`
+        }));
+      }
 
       const medals = ['🥇', '🥈', '🥉'];
 
