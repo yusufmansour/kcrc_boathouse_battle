@@ -78,7 +78,6 @@
       /* Center align leaderboard players */
     }
 
-
     .week-button {
       text-align: center;
       transition: background-color 0.2s ease;
@@ -91,7 +90,6 @@
       height: 3em;
       padding: 6px 12px;
       vertical-align: middle;
-
     }
 
     /* Default/undecided */
@@ -124,10 +122,55 @@
       outline: 4px solid #577aff;
       /* subtle outline so it still pops */
     }
+
+    @font-face {
+      font-family: 'DigitalClock';
+      src: url('media/digital-7.ttf') format('truetype');
+    }
+
+    .countdown {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 3em;
+      font-weight: bold;
+      background-color: black;
+      color: rgb(187, 0, 0);
+      padding: 10px;
+      border-radius: 10px;
+      font-family: 'DigitalClock', 'Courier New', Courier, monospace;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .countdown .unit {
+      font-size: 0.5em;
+      color: white;
+      display: block;
+    }
+
+    .countdown .time {
+      display: inline-block;
+      margin: 0 10px;
+    }
   </style>
 </head>
 
 <body>
+  <div class="countdown" id="countdown">
+    <div class="time">
+      <span class="unit">HOURS</span>
+      <span id="hours">00</span>
+    </div>
+    <div class="time">
+      <span class="unit">MINUTES</span>
+      <span id="minutes">00</span>
+    </div>
+    <div class="time">
+      <span class="unit">SECONDS</span>
+      <span id="seconds">00</span>
+    </div>
+  </div>
   <div>
     <h1>
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
@@ -163,8 +206,31 @@
   </div>
   <div id="winnerButtons" style="margin-top: 20px;"></div>
 
-
   <script>
+    function updateCountdown() {
+      const targetDate = new Date('September 7, 2025 20:00:00 GMT-0700'); // Pacific Time
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        document.getElementById('hours').textContent = "00";
+        document.getElementById('minutes').textContent = "00";
+        document.getElementById('seconds').textContent = "00";
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // Initialize immediately
+
     const winners = ['port', 'starboard', 'starboard', ''];
     // Per-week course configuration
     // weekNumber: { minCourse: meters, buoySpacing: meters }
@@ -174,7 +240,14 @@
       3: { minCourse: 2000, buoySpacing: 250 },
       5: { minCourse: 10000, buoySpacing: 1000 } // FINAL
     };
-
+    const week = 5; // default week to load
+    function jitterDigit(base) {
+      // Random offset between -2 and +2, clamp between 0–9
+      let digit = Math.floor((base % 100) / 10);
+      const offset = Math.floor(Math.random() * 5) - 2;
+      digit = Math.min(9, Math.max(0, digit + offset));
+      return digit;
+    }
     function highlightWeekButton(week) {
       // Remove active class from all week buttons
       document.querySelectorAll('button[id^="week"]').forEach(button => button.classList.remove('active-week'));
@@ -264,21 +337,7 @@
       let portRange = [portScore, portScore];
       let starboardRange = [starboardScore, starboardScore];
 
-      if (week === 5) {
-        // Round down to nearest 100
-        const portLow = Math.floor(portScore / 100) * 100;
-        const starLow = Math.floor(starboardScore / 100) * 100;
 
-        // Define ranges
-        portRange = [portLow, portLow + 99];
-        starboardRange = [starLow, starLow + 99];
-
-        // Obscured text
-        displayPort = `${Math.floor(portScore / 100)}??`;
-        displayStarboard = `${Math.floor(starboardScore / 100)}??`;
-      }
-      console.log(`Week ${week} - Port: ${portScore} (${portRange[0]}-${portRange[1]}), Starboard: ${starboardScore} (${starboardRange[0]}-${starboardRange[1]})`);
-      console.log(`Display - Port: ${displayPort}, Starboard: ${displayStarboard}`);
       document.getElementById('team1').textContent = `Team Port: ${displayPort}`;
       document.getElementById('team2').textContent = `Team Starboard: ${displayStarboard}`;
       const trackWidth = window.innerWidth * 0.9;
@@ -320,28 +379,10 @@
       let boat1Pos = getBoatPixel(portScore, courseLength, maxPixels, startOffset, boatLength);
       let boat2Pos = getBoatPixel(starboardScore, courseLength, maxPixels, startOffset, boatLength);
 
-      if (week === 5) {
-        // redefine boats to drift between ranges
-        const [portLow, portHigh] = portRange;
-        const [starLow, starHigh] = starboardRange;
-
-        const portLowPx = getBoatPixel(portLow, courseLength, maxPixels, startOffset, boatLength);
-        const portHighPx = getBoatPixel(portHigh, courseLength, maxPixels, startOffset, boatLength);
-
-        const starLowPx = getBoatPixel(starLow, courseLength, maxPixels, startOffset, boatLength);
-        const starHighPx = getBoatPixel(starHigh, courseLength, maxPixels, startOffset, boatLength);
-
-        // smooth oscillation using sine wave
-        const now = Date.now() / 1000;
-        const t = (Math.sin(now) + 1) / 2; // 0 → 1 oscillation
-
-        boat1Pos = portLowPx + t * (portHighPx - portLowPx);
-        boat2Pos = starLowPx + (1 - t) * (starHighPx - starLowPx); // offset motion
-      }
 
 
-document.getElementById('boat1').style.left = `${boat1Pos}px`;
-document.getElementById('boat2').style.left = `${boat2Pos}px`;
+      document.getElementById('boat1').style.left = `${boat1Pos}px`;
+      document.getElementById('boat2').style.left = `${boat2Pos}px`;
 
 
       // === NEW: regenerate buoys ===
@@ -393,16 +434,7 @@ document.getElementById('boat2').style.left = `${boat2Pos}px`;
         name: row[7],
         points: parseInt(row[week + 7], 10) || 0
       })).filter(player => player.name).sort((a, b) => b.points - a.points).slice(0, 3);
-      if (week === 5) {
-        portPlayers = portPlayers.map(p => ({
-          ...p,
-          points: `${Math.floor(p.points / 100)}??`
-        }));
-        starboardPlayers = starboardPlayers.map(p => ({
-          ...p,
-          points: `${Math.floor(p.points / 100)}??`
-        }));
-      }
+
 
       const medals = ['🥇', '🥈', '🥉'];
 
@@ -415,10 +447,64 @@ document.getElementById('boat2').style.left = `${boat2Pos}px`;
       const starboardTop3 = document.getElementById('starboardTop3');
       starboardTop3.innerHTML = `<h3>Starboard Leaderboard</h3>` +
         starboardPlayers.map((player, index) => `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`).join('');
+        if (week === 5) {
+      const portBase = Math.floor(portScore / 100) * 100;
+      const starBase = Math.floor(starboardScore / 100) * 100;
+
+      const portHundreds = Math.floor(portBase / 100);
+      const starHundreds = Math.floor(starBase / 100);
+
+      function updateWeek5() {
+        // --- Boats ---
+        const portTens = jitterDigit(portBase);
+        const starTens = jitterDigit(starBase);
+
+        const displayPort = `${portHundreds}??`;
+        const displayStarboard = `${starHundreds}??`;
+
+        document.getElementById('team1').textContent = `Team Port: ${displayPort}`;
+        document.getElementById('team2').textContent = `Team Starboard: ${displayStarboard}`;
+
+        // --- Leaderboard jitter ---
+        const portTop3Container = document.getElementById('portTop3');
+        const starboardTop3Container = document.getElementById('starboardTop3');
+
+        const medals = ['🥇', '🥈', '🥉'];
+
+        const jitterPortPlayers = portPlayers.map(p => {
+          const base = Math.floor(p.points / 100) * 100;
+          const hundreds = Math.floor(base / 100);
+          return { ...p, points: `${hundreds}??` };
+        });
+
+        const jitterStarboardPlayers = starboardPlayers.map(p => {
+          const base = Math.floor(p.points / 100) * 100;
+          const hundreds = Math.floor(base / 100);
+          return { ...p, points: `${hundreds}??` };
+        });
+
+        portTop3Container.innerHTML = `<h3>Port Leaderboard</h3>` +
+          jitterPortPlayers.map((player, index) =>
+            `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`
+          ).join('');
+
+        starboardTop3Container.innerHTML = `<h3>Starboard Leaderboard</h3>` +
+          jitterStarboardPlayers.map((player, index) =>
+            `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`
+          ).join('');
+      }
+
+      // Start or continue the 1-second loop
+      updateWeek5();
+      if (!window.week5Interval) {
+        window.week5Interval = setInterval(updateWeek5, 3000);
+      }
     }
 
+      }
+
     // Default to Week 1 on page load
-    fetchScores(5);
+    fetchScores(week);
     updateWeekButtons(winners);
 
     // Rerun the query every 30 seconds
