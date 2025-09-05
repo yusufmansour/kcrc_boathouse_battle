@@ -129,14 +129,14 @@
     }
 
     .countdown {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 3em;
+      position: static;
+      margin-top: 20px;
+      width: 100%;
+      font-size: 10em;
       font-weight: bold;
       background-color: black;
       color: rgb(187, 0, 0);
-      padding: 10px;
+      padding: 20px 0;
       border-radius: 10px;
       font-family: 'DigitalClock', 'Courier New', Courier, monospace;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -144,33 +144,19 @@
     }
 
     .countdown .unit {
-      font-size: 0.5em;
+      font-size: 0.3em;
       color: white;
       display: block;
     }
 
     .countdown .time {
       display: inline-block;
-      margin: 0 10px;
+      margin: 0 20px;
     }
   </style>
 </head>
 
 <body>
-  <div class="countdown" id="countdown">
-    <div class="time">
-      <span class="unit">HOURS</span>
-      <span id="hours">00</span>
-    </div>
-    <div class="time">
-      <span class="unit">MINUTES</span>
-      <span id="minutes">00</span>
-    </div>
-    <div class="time">
-      <span class="unit">SECONDS</span>
-      <span id="seconds">00</span>
-    </div>
-  </div>
   <div>
     <h1>
       <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
@@ -205,6 +191,21 @@
     <button id="week5" class="week-button" onclick="fetchScores(5)">Week 4<br>FINAL</button>
   </div>
   <div id="winnerButtons" style="margin-top: 20px;"></div>
+
+  <div class="countdown" id="countdown">
+    <div class="time">
+      <span class="unit">HOURS</span>
+      <span id="hours">00</span>
+    </div>
+    <div class="time">
+      <span class="unit">MINUTES</span>
+      <span id="minutes">00</span>
+    </div>
+    <div class="time">
+      <span class="unit">SECONDS</span>
+      <span id="seconds">00</span>
+    </div>
+  </div>
 
   <script>
     function updateCountdown() {
