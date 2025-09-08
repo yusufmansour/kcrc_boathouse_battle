@@ -10,6 +10,7 @@
       font-family: sans-serif;
       text-align: center;
       padding: 50px;
+
     }
 
     .team {
@@ -232,7 +233,7 @@
     setInterval(updateCountdown, 1000);
     updateCountdown(); // Initialize immediately
 
-    const winners = ['port', 'starboard', 'starboard', ''];
+    const winners = ['port', 'starboard', 'starboard', 'port'];
     // Per-week course configuration
     // weekNumber: { minCourse: meters, buoySpacing: meters }
     const weekSettings = {
@@ -460,8 +461,8 @@
         const portTens = jitterDigit(portBase);
         const starTens = jitterDigit(starBase);
 
-        const displayPort = `${portHundreds}??`;
-        const displayStarboard = `${starHundreds}??`;
+        const displayPort = portScore;//`${portHundreds}??`;
+        const displayStarboard = starboardScore;//`${starHundreds}??`;
 
         document.getElementById('team1').textContent = `Team Port: ${displayPort}`;
         document.getElementById('team2').textContent = `Team Starboard: ${displayStarboard}`;
@@ -475,13 +476,13 @@
         const jitterPortPlayers = portPlayers.map(p => {
           const base = Math.floor(p.points / 100) * 100;
           const hundreds = Math.floor(base / 100);
-          return { ...p, points: `${hundreds}??` };
+          return  { ...p, points: p.points };//{ ...p, points: `${hundreds}??` };
         });
 
         const jitterStarboardPlayers = starboardPlayers.map(p => {
           const base = Math.floor(p.points / 100) * 100;
           const hundreds = Math.floor(base / 100);
-          return { ...p, points: `${hundreds}??` };
+          return { ...p, points: p.points };//{ ...p, points: `${hundreds}??` };
         });
 
         portTop3Container.innerHTML = `<h3>Port Leaderboard</h3>` +
