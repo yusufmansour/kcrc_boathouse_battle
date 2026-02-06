@@ -256,37 +256,38 @@
       spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv',
       
       // Competition end date
-      endDate: new Date('March 1, 2026 20:00:00 GMT-0700'),
+      endDate: new Date('September 7, 2025 20:00:00 GMT-0700'),
       
       // Week settings: course length and buoy spacing
       weekSettings: {
         1: { minCourse: 2000, buoySpacing: 250 },
         2: { minCourse: 2000, buoySpacing: 250 },
         3: { minCourse: 2000, buoySpacing: 250 },
-        //4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
+        4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
       },
       
       // Default week to display on load
-      defaultWeek: 1,
+      defaultWeek: 4,
       
       // Refresh interval in milliseconds
       refreshInterval: 15000,
       
-      // Team configuration
+      // Team configuration - names should match the color from CSV headers
+      // CSV has: "Team: BLUE", "Team: GREEN", "Team: PURPLE", "Team: RED"
       teams: [
-        { name: 'Team Red', color: '#b70000', boatImage: 'media/rowing_shell_red.png' },
-        { name: 'Team Green', color: '#167401', boatImage: 'media/rowing_shell_green.png' },
         { name: 'Team Blue', color: '#0066cc', boatImage: 'media/rowing_shell_blue.png' },
-        { name: 'Team Purple', color: '#ff8800', boatImage: 'media/rowing_shell_purple.png' }
+        { name: 'Team Green', color: '#167401', boatImage: 'media/rowing_shell_green.png' },
+        { name: 'Team Purple', color: '#9900cc', boatImage: 'media/rowing_shell_purple.png' },
+        { name: 'Team Red', color: '#b70000', boatImage: 'media/rowing_shell_red.png' }
       ],
       
       // Manual week winners (set team name or null for auto-calculate from scores)
       // Team name must match exactly (case-insensitive) with teams array above
       manualWinners: {
-        1: '',        // Week 1 winner
-        2: '',      // Week 2 winner
-        3: '',       // Week 3 winner
-        4: ''               // Week 4 - null to auto-calculate
+        1: 'Team Green',      // Week 1 winner (currently has 53 points)
+        2: null,              // Week 2 winner - auto-calculate
+        3: null,              // Week 3 winner - auto-calculate
+        4: null               // Week 4 - null to auto-calculate
       }
     };
 
@@ -341,6 +342,7 @@
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
       
@@ -355,6 +357,10 @@
       const headers = rows[0];
       const totalsRow = rows[1];
       
+      console.log('Headers:', headers);
+      console.log('Totals Row:', totalsRow);
+      console.log('Week requested:', week);
+      
       // First, initialize ALL teams from CONFIG (so they show even with no data)
       CONFIG.teams.forEach(team => {
         teamData.push({
@@ -366,37 +372,60 @@
         });
       });
       
-      // Then update with actual data from sheets
-      headers.forEach((header, colIndex) => {
-        if (header.toLowerCase().includes('team:')) {
-          const teamName = header.replace(/team:/i, '').trim();
-          const teamIndex = teamData.findIndex(t => 
-            t.name.toLowerCase() === teamName.toLowerCase()
+      // Parse the actual CSV structure
+      // Format: "Team: NAME", "Week 1", "Week 2", "Week 3", "Week 4", "Total", "", "Team: NAME", ...
+      let currentCol = 0;
+      while (currentCol < headers.length) {
+        const header = headers[currentCol];
+        
+        if (header && header.toLowerCase().includes('team:')) {
+          // Extract team name (e.g., "Team: BLUE" -> "BLUE")
+          const teamNameFromSheet = header.replace(/team:/i, '').trim();
+          
+          // Find matching team in CONFIG (case-insensitive match)
+          const configTeam = CONFIG.teams.find(t => 
+            t.name.toLowerCase().includes(teamNameFromSheet.toLowerCase()) ||
+            teamNameFromSheet.toLowerCase().includes(t.name.toLowerCase().split(' ').pop().toLowerCase())
           );
           
-          if (teamIndex !== -1) {
-            // Week score is at column offset 'week' from team name column
-            const weekScore = parseInt(totalsRow[colIndex + week], 10) || 0;
+          if (configTeam) {
+            const teamIndex = teamData.findIndex(t => t.name === configTeam.name);
             
-            // Get individual player scores
-            const players = [];
-            for (let r = 3; r < rows.length; r++) {
-              const playerName = rows[r][colIndex];
-              const playerScore = parseInt(rows[r][colIndex + week], 10) || 0;
-              if (playerName && playerScore > 0) {
-                players.push({ name: playerName, score: playerScore });
+            if (teamIndex !== -1) {
+              // The week columns come right after the team name
+              // Week 1 is at currentCol + 1, Week 2 at currentCol + 2, etc.
+              const weekColOffset = week; // week 1 = offset 1, week 2 = offset 2, etc.
+              const weekScore = parseInt(totalsRow[currentCol + weekColOffset], 10) || 0;
+              
+              console.log(`Team ${configTeam.name} (${teamNameFromSheet}) - Week ${week} score:`, weekScore);
+              
+              // Get individual player scores
+              const players = [];
+              for (let r = 3; r < rows.length; r++) {
+                const playerName = rows[r][currentCol];
+                const playerScore = parseInt(rows[r][currentCol + weekColOffset], 10) || 0;
+                
+                // Only add if player name exists and score > 0
+                if (playerName && playerName.trim() && playerScore > 0) {
+                  players.push({ name: playerName.trim(), score: playerScore });
+                }
               }
+              
+              players.sort((a, b) => b.score - a.score);
+              
+              // Update the team data
+              teamData[teamIndex].score = weekScore;
+              teamData[teamIndex].topPlayers = players.slice(0, 3);
+              
+              console.log(`Team ${configTeam.name} players:`, players);
             }
-            
-            players.sort((a, b) => b.score - a.score);
-            
-            // Update the team data
-            teamData[teamIndex].score = weekScore;
-            teamData[teamIndex].topPlayers = players.slice(0, 3);
           }
         }
-      });
+        
+        currentCol++;
+      }
       
+      console.log('Final teamData:', teamData);
       return teamData;
     }
 
