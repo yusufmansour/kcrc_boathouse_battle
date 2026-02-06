@@ -146,10 +146,7 @@
       background: #ffd700;
       border-color: #daa520;
       font-weight: bold;
-    }
-
-    .week-button.winner:hover {
-      background: #ffed4e;
+      color: white;
     }
 
     /* Countdown Timer */
@@ -281,14 +278,23 @@
         { name: 'Team Green', color: '#167401', boatImage: 'media/rowing_shell_green.png' },
         { name: 'Team Blue', color: '#0066cc', boatImage: 'media/rowing_shell_blue.png' },
         { name: 'Team Purple', color: '#ff8800', boatImage: 'media/rowing_shell_purple.png' }
-      ]
+      ],
+      
+      // Manual week winners (set team name or null for auto-calculate from scores)
+      // Team name must match exactly (case-insensitive) with teams array above
+      manualWinners: {
+        1: 'Team Red',        // Week 1 winner
+        2: 'Team Green',      // Week 2 winner
+        3: 'Team Blue',       // Week 3 winner
+        4: null               // Week 4 - null to auto-calculate
+      }
     };
 
     // ============================================================================
     // STATE MANAGEMENT
     // ============================================================================
     let currentWeek = CONFIG.defaultWeek;
-    let weekWinners = {}; // Populated from data
+    let weekWinners = {}; // Populated from data or manual config
     let numWeeks = 4;
     let refreshIntervalId = null;
 
@@ -400,29 +406,42 @@
       
       numWeeks = weekCount;
       
-      // Find winner for each week
+      // Determine winners: use manual config if set, otherwise auto-calculate
       for (let w = 1; w <= weekCount; w++) {
-        let maxScore = -1;
-        let winningTeam = null;
-        let isTie = false;
-        
-        teamCols.forEach(colIndex => {
-          const teamName = headers[colIndex].replace(/team:/i, '').trim();
-          const score = parseInt(totalsRow[colIndex + w], 10) || 0;
+        // Check if manual winner is configured
+        if (CONFIG.manualWinners && CONFIG.manualWinners[w] !== undefined && CONFIG.manualWinners[w] !== null) {
+          winners[w] = CONFIG.manualWinners[w];
+        } else {
+          // Auto-calculate from scores
+          let maxScore = -1;
+          let winningTeam = null;
+          let isTie = false;
           
-          if (score > maxScore) {
-            maxScore = score;
-            winningTeam = teamName;
-            isTie = false;
-          } else if (score === maxScore) {
-            isTie = true;
-          }
-        });
-        
-        winners[w] = isTie ? null : winningTeam;
+          teamCols.forEach(colIndex => {
+            const teamName = headers[colIndex].replace(/team:/i, '').trim();
+            const score = parseInt(totalsRow[colIndex + w], 10) || 0;
+            
+            if (score > maxScore) {
+              maxScore = score;
+              winningTeam = teamName;
+              isTie = false;
+            } else if (score === maxScore && score > 0) {
+              isTie = true;
+            }
+          });
+          
+          winners[w] = isTie ? null : winningTeam;
+        }
       }
       
       return winners;
+    }
+
+    function getTeamColor(teamName) {
+      const team = CONFIG.teams.find(t => 
+        t.name.toLowerCase() === teamName.toLowerCase()
+      );
+      return team ? team.color : '#666';
     }
 
     // ============================================================================
@@ -473,7 +492,7 @@
         track.appendChild(bottomBuoy);
       });
       
-      // Create boats
+      // Create boats - ALWAYS show boats even if score is 0
       teamData.forEach((team, index) => {
         const boat = document.createElement('img');
         boat.className = 'boat';
@@ -484,6 +503,7 @@
         const boatLength = Math.max(trackWidth * 0.08, 80);
         boat.style.width = `${boatLength}px`;
         
+        // Position boat - if score is 0, show at starting line
         const boatPos = startOffset - boatLength + (team.score / courseLength) * maxPixels;
         boat.style.left = `${boatPos}px`;
         
@@ -520,7 +540,7 @@
         const score = document.createElement('div');
         score.className = 'team-score';
         score.style.color = team.color;
-        score.textContent = `Team ${team.name}: ${team.score}`;
+        score.textContent = `${team.name}: ${team.score}`;
         
         const leaderboard = document.createElement('div');
         leaderboard.className = 'leaderboard';
@@ -530,11 +550,20 @@
         leaderboard.appendChild(title);
         
         const medals = ['🥇', '🥈', '🥉'];
-        team.topPlayers.forEach((player, index) => {
+        
+        if (team.topPlayers.length > 0) {
+          team.topPlayers.forEach((player, index) => {
+            const p = document.createElement('p');
+            p.textContent = `${medals[index]} ${player.name}: ${player.score} points ${medals[index]}`;
+            leaderboard.appendChild(p);
+          });
+        } else {
           const p = document.createElement('p');
-          p.textContent = `${medals[index]} ${player.name}: ${player.score} points ${medals[index]}`;
+          p.textContent = 'No scores yet';
+          p.style.fontStyle = 'italic';
+          p.style.color = '#999';
           leaderboard.appendChild(p);
-        });
+        }
         
         section.appendChild(score);
         section.appendChild(leaderboard);
@@ -554,13 +583,30 @@
         button.className = 'week-button';
         button.id = `week${w}`;
         
-        const isWinner = weekWinners[w];
+        const winningTeam = weekWinners[w];
         const isFinal = w === numWeeks;
         
-        if (isWinner) {
+        if (winningTeam) {
           button.classList.add('winner');
-          button.innerHTML = `👑<br>${isWinner}`;
-          button.title = `Week ${w} - Winner: ${isWinner}`;
+          button.innerHTML = `👑<br>${winningTeam}`;
+          button.title = `Week ${w} - Winner: ${winningTeam}`;
+          
+          // Set winning team color
+          const teamColor = getTeamColor(winningTeam);
+          button.style.setProperty('--team-color', teamColor);
+          
+          // Add hover effect with team color
+          button.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = teamColor;
+            this.style.borderColor = teamColor;
+          });
+          
+          button.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+              this.style.backgroundColor = '#ffd700';
+              this.style.borderColor = '#daa520';
+            }
+          });
         } else {
           button.textContent = isFinal ? `Week ${w}\nFINAL` : `Week ${w}`;
           button.title = `Week ${w}`;
