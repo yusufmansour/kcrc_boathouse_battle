@@ -256,18 +256,18 @@
       spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv',
       
       // Competition end date
-      endDate: new Date('September 7, 2025 20:00:00 GMT-0700'),
+      endDate: new Date('March 1, 2026 20:00:00 GMT-0700'),
       
       // Week settings: course length and buoy spacing
       weekSettings: {
         1: { minCourse: 2000, buoySpacing: 250 },
         2: { minCourse: 2000, buoySpacing: 250 },
         3: { minCourse: 2000, buoySpacing: 250 },
-        4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
+        //4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
       },
       
       // Default week to display on load
-      defaultWeek: 4,
+      defaultWeek: 1,
       
       // Refresh interval in milliseconds
       refreshInterval: 15000,
@@ -284,10 +284,10 @@
       // Manual week winners (set team name or null for auto-calculate from scores)
       // Team name must match exactly (case-insensitive) with teams array above
       manualWinners: {
-        1: 'Team Green',      // Week 1 winner (currently has 53 points)
-        2: null,              // Week 2 winner - auto-calculate
-        3: null,              // Week 3 winner - auto-calculate
-        4: null               // Week 4 - null to auto-calculate
+        1: '',      // Week 1 winner (currently has 53 points)
+        2: '',              // Week 2 winner - auto-calculate
+        3: '',              // Week 3 winner - auto-calculate
+        4: ''               // Week 4 - null to auto-calculate
       }
     };
 
@@ -296,7 +296,7 @@
     // ============================================================================
     let currentWeek = CONFIG.defaultWeek;
     let weekWinners = {}; // Populated from data or manual config
-    let numWeeks = 4;
+    let numWeeks = 3;
     let refreshIntervalId = null;
 
     // ============================================================================
