@@ -262,7 +262,7 @@
       weekSettings: {
         1: { minCourse: 2000, buoySpacing: 250 },
         2: { minCourse: 2000, buoySpacing: 250 },
-        3: { minCourse: 2000, buoySpacing: 250 }
+        3: { minCourse: 2000, buoySpacing: 250 },
         //4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
       },
       
@@ -331,8 +331,20 @@
     // DATA FETCHING AND PARSING
     // ============================================================================
     async function fetchScoresData() {
-      const url = `${CONFIG.spreadsheetUrl}&_=${new Date().getTime()}`;
-      const response = await fetch(url);
+      // Add multiple cache-busting parameters to ensure fresh data
+      const timestamp = new Date().getTime();
+      const random = Math.random();
+      const url = `${CONFIG.spreadsheetUrl}&_t=${timestamp}&_r=${random}`;
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      
       const csvText = await response.text();
       return csvText.split('\n').map(row => 
         row.split(',').map(cell => cell.trim())
@@ -344,16 +356,26 @@
       const headers = rows[0];
       const totalsRow = rows[1];
       
-      // Find team columns dynamically
-      // Expected format: "Team: TEAMNAME" in row 0
+      // First, initialize ALL teams from CONFIG (so they show even with no data)
+      CONFIG.teams.forEach(team => {
+        teamData.push({
+          name: team.name,
+          color: team.color,
+          boatImage: team.boatImage,
+          score: 0,
+          topPlayers: []
+        });
+      });
+      
+      // Then update with actual data from sheets
       headers.forEach((header, colIndex) => {
         if (header.toLowerCase().includes('team:')) {
           const teamName = header.replace(/team:/i, '').trim();
-          const team = CONFIG.teams.find(t => 
+          const teamIndex = teamData.findIndex(t => 
             t.name.toLowerCase() === teamName.toLowerCase()
           );
           
-          if (team) {
+          if (teamIndex !== -1) {
             // Week score is at column offset 'week' from team name column
             const weekScore = parseInt(totalsRow[colIndex + week], 10) || 0;
             
@@ -369,13 +391,9 @@
             
             players.sort((a, b) => b.score - a.score);
             
-            teamData.push({
-              name: teamName,
-              color: team.color,
-              boatImage: team.boatImage,
-              score: weekScore,
-              topPlayers: players.slice(0, 3)
-            });
+            // Update the team data
+            teamData[teamIndex].score = weekScore;
+            teamData[teamIndex].topPlayers = players.slice(0, 3);
           }
         }
       });
