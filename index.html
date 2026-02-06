@@ -6,122 +6,186 @@
   <title>KCRC Boathouse Battle Scores</title>
   <link rel="icon" type="image/png" href="media/boathouse_battle_icon.png">
   <style>
+    :root {
+      /* Configuration variables */
+      --num-teams: 4;
+      --boat-height: 80px;
+      --track-height: calc(var(--boat-height) * var(--num-teams) + 20px);
+    }
+
     body {
       font-family: sans-serif;
       text-align: center;
       padding: 50px;
-
+      background: #fafafa;
     }
 
-    .team {
-      font-size: 2.5rem;
-      /* Increase font size for scores */
-      margin-bottom: 20px;
+    h1 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
     }
 
-    .active-week {
-      background-color: rgb(87, 98, 255);
-      font-weight: bold;
-      color: white;
-      /* Change text color to white */
+    h1 img {
+      height: 2em;
     }
 
-    button {
-      font-size: 2em;
-      /* Double the font size */
-      padding: 20px;
-      /* Increase padding for larger buttons */
-    }
-
+    /* Race Track */
     .race-track {
       position: relative;
-      width: 120%;
-      /* Extend track by 20% before 0 and after 1000 */
-      height: 150px;
-      margin: 0 auto;
-      /* Center the track */
+      width: 90%;
+      max-width: 1400px;
+      height: var(--track-height);
+      margin: 30px auto;
       background: #f0f0f0;
       border: 3px solid #aaa;
       border-radius: 6px;
+      overflow: visible;
     }
 
     .boat {
       position: absolute;
-      top: 10px;
-      height: 80px;
+      height: var(--boat-height);
+      width: 120px;
       transition: left 0.5s ease;
+      z-index: 10;
     }
 
-    #boat1 {
-      top: 2px;
+    .lane-divider {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      border-top: 1px dashed #666;
     }
 
-    #boat2 {
-      top: 77px;
+    .buoy {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: blue;
+      border-radius: 50%;
     }
 
-    .team-container {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      /* Center align vertically */
-      margin-top: 50px;
+    .buoy-label {
+      position: absolute;
+      left: 12px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    /* Team Display */
+    .teams-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 1400px;
+      margin: 50px auto;
+      padding: 0 20px;
     }
 
     .team-section {
-      width: 45%;
-      text-align: center;
-      /* Center align text */
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .leaderboard {
-      text-align: center;
-      /* Center align leaderboard players */
+    .team-score {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .leaderboard h3 {
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    .leaderboard p {
+      margin: 8px 0;
+      font-size: 1.1em;
+    }
+
+    /* Week Buttons */
+    .week-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 30px 0;
     }
 
     .week-button {
-      text-align: center;
-      transition: background-color 0.2s ease;
-      white-space: normal;
-      background-color: #f0f0f0;
-      color: black;
-      line-height: 1.2em;
-      border: 1px solid #ccc;
-      font-weight: normal;
-      height: 3em;
-      padding: 6px 12px;
-      vertical-align: middle;
+      padding: 15px 25px;
+      font-size: 1.1em;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      background: white;
+      transition: all 0.2s ease;
+      min-width: 120px;
+      font-weight: 500;
     }
 
-    /* Default/undecided */
-    .winner-undecided {
-      background-color: #f0f0f0;
-      color: black;
-    }
-
-    /* Port & Starboard winners */
-    .winner-port {
-      background-color: #b70000;
-      color: white;
-    }
-
-    .winner-starboard {
-      background-color: #167401;
-      color: white;
-    }
-
-    /* Hover — all buttons turn light blue */
     .week-button:hover {
-      background-color: #d0e4ff;
-      /* light blue */
-      color: black;
+      background: #d0e4ff;
+      border-color: #577aff;
+      transform: translateY(-2px);
     }
 
-    /* Selected (clicked/active) */
-    .week-button.active-week {
+    .week-button.active {
+      background: #577aff;
+      color: white;
+      border-color: #577aff;
       font-weight: bold;
-      outline: 4px solid #577aff;
-      /* subtle outline so it still pops */
+    }
+
+    .week-button.winner {
+      background: #ffd700;
+      border-color: #daa520;
+      font-weight: bold;
+    }
+
+    .week-button.winner:hover {
+      background: #ffed4e;
+    }
+
+    /* Countdown Timer */
+    .countdown {
+      margin: 50px auto;
+      width: 90%;
+      max-width: 800px;
+      font-size: 8vw;
+      font-weight: bold;
+      background: #000525;
+      color: #bb0000;
+      padding: 40px 20px;
+      border-radius: 20px;
+      font-family: 'DigitalClock', 'Courier New', monospace;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .countdown {
+        font-size: 5em;
+      }
+    }
+
+    .countdown .time {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .countdown .unit {
+      font-size: 0.25em;
+      color: white;
+      margin-bottom: 5px;
     }
 
     @font-face {
@@ -129,71 +193,49 @@
       src: url('media/digital-7.ttf') format('truetype');
     }
 
-    .countdown {
-      position: static;
-      margin: 0 auto; /* Center horizontally */
-      width: 80%;
-      font-size: 10em;
-      font-weight: bold;
-      background-color: rgb(0, 5, 37);
-      color: rgb(187, 0, 0);
-      padding: 20px 0;
-      border-radius: 40px;
-      font-family: 'DigitalClock', 'Courier New', Courier, monospace;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      text-align: center;
+    /* Loading State */
+    .loading {
+      opacity: 0.5;
+      pointer-events: none;
     }
 
-    .countdown .unit {
-      font-size: 0.3em;
-      color: white;
-      display: block;
-    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .teams-container {
+        grid-template-columns: 1fr;
+      }
 
-    .countdown .time {
-      display: inline-block;
-      margin: 0 20px;
+      .team-score {
+        font-size: 2rem;
+      }
+
+      .countdown {
+        font-size: 12vw;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div>
+  <header>
     <h1>
-      <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
-      KCRC Boathouse Battle
-      <img src="media/boathouse_battle_icon.png" alt="Logo" style="height: 2em;">
+      <img src="media/boathouse_battle_icon.png" alt="Logo">
+      <span>KCRC Boathouse Battle</span>
+      <img src="media/boathouse_battle_icon.png" alt="Logo">
     </h1>
-  </div>
-  <div class="race-track">
-    <!-- Dotted line -->
-    <div style="position: absolute; left: 0; top: 75px; width: 100%; height: 1px; border-top: 1px dashed black;"></div>
+  </header>
 
-    <img id="boat1" class="boat" src="media/rowing_shell_red.png" alt="Team Port">
-    <img id="boat2" class="boat" src="media/rowing_shell_green.png" alt="Team Starboard">
-  </div>
-  </div>
+  <!-- Race Track with Boats -->
+  <div class="race-track" id="raceTrack"></div>
 
-  <div class="team-container">
-    <div class="team-section">
-      <div id="team1" class="team">Team Port: Loading...</div>
-      <div id="portTop3" class="leaderboard"></div>
-    </div>
-    <div class="team-section">
-      <div id="team2" class="team">Team Starboard: Loading...</div>
-      <div id="starboardTop3" class="leaderboard"></div>
-    </div>
-  </div>
+  <!-- Team Scores and Leaderboards -->
+  <div class="teams-container" id="teamsContainer"></div>
 
-  <div>
-    <button id="week1" class="week-button" onclick="fetchScores(1)">Week 1</button>
-    <button id="week2" class="week-button" onclick="fetchScores(2)">Week 2</button>
-    <button id="week3" class="week-button" onclick="fetchScores(3)">Week 3</button>
-    <button id="week5" class="week-button" onclick="fetchScores(5)">Week 4<br>FINAL</button>
-  </div>
-  <div id="winnerButtons" style="margin-top: 20px;"></div>
+  <!-- Week Selection Buttons -->
+  <div class="week-buttons" id="weekButtons"></div>
 
-  <div class="countdown" id="countdown">
+  <!-- Countdown Timer (Week 4 only) -->
+  <div class="countdown" id="countdown" style="display: none;">
     <div class="time">
       <span class="unit">HOURS</span>
       <span id="hours">00</span>
@@ -209,10 +251,53 @@
   </div>
 
   <script>
+    // ============================================================================
+    // CONFIGURATION
+    // ============================================================================
+    const CONFIG = {
+      // Google Sheets CSV URL (update with your published sheet URL)
+      spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv',
+      
+      // Competition end date
+      endDate: new Date('September 7, 2025 20:00:00 GMT-0700'),
+      
+      // Week settings: course length and buoy spacing
+      weekSettings: {
+        1: { minCourse: 2000, buoySpacing: 250 },
+        2: { minCourse: 2000, buoySpacing: 250 },
+        3: { minCourse: 2000, buoySpacing: 250 },
+        4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
+      },
+      
+      // Default week to display on load
+      defaultWeek: 4,
+      
+      // Refresh interval in milliseconds
+      refreshInterval: 15000,
+      
+      // Team configuration
+      teams: [
+        { name: 'Team Red', color: '#b70000', boatImage: 'media/rowing_shell_red.png' },
+        { name: 'Team Green', color: '#167401', boatImage: 'media/rowing_shell_green.png' },
+        { name: 'Team Blue', color: '#0066cc', boatImage: 'media/rowing_shell_blue.png' },
+        { name: 'Team Purple', color: '#ff8800', boatImage: 'media/rowing_shell_purple.png' }
+      ]
+    };
+
+    // ============================================================================
+    // STATE MANAGEMENT
+    // ============================================================================
+    let currentWeek = CONFIG.defaultWeek;
+    let weekWinners = {}; // Populated from data
+    let numWeeks = 4;
+    let refreshIntervalId = null;
+
+    // ============================================================================
+    // COUNTDOWN TIMER
+    // ============================================================================
     function updateCountdown() {
-      const targetDate = new Date('September 7, 2025 20:00:00 GMT-0700'); // Pacific Time
       const now = new Date();
-      const diff = targetDate - now;
+      const diff = CONFIG.endDate - now;
 
       if (diff <= 0) {
         document.getElementById('hours').textContent = "00";
@@ -230,290 +315,325 @@
       document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
     }
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown(); // Initialize immediately
-
-    const winners = ['port', 'starboard', 'starboard', 'port'];
-    // Per-week course configuration
-    // weekNumber: { minCourse: meters, buoySpacing: meters }
-    const weekSettings = {
-      1: { minCourse: 2000, buoySpacing: 250 },
-      2: { minCourse: 2000, buoySpacing: 250 },
-      3: { minCourse: 2000, buoySpacing: 250 },
-      5: { minCourse: 10000, buoySpacing: 1000 } // FINAL
-    };
-    const week = 5; // default week to load
-    function jitterDigit(base) {
-      // Random offset between -2 and +2, clamp between 0–9
-      let digit = Math.floor((base % 100) / 10);
-      const offset = Math.floor(Math.random() * 5) - 2;
-      digit = Math.min(9, Math.max(0, digit + offset));
-      return digit;
-    }
-    function highlightWeekButton(week) {
-      // Remove active class from all week buttons
-      document.querySelectorAll('button[id^="week"]').forEach(button => button.classList.remove('active-week'));
-      // Add active class to the selected week button
-      document.getElementById(`week${week}`).classList.add('active-week');
+    function updateCountdownVisibility() {
+      const countdown = document.getElementById('countdown');
+      // Only show countdown during week 4
+      countdown.style.display = currentWeek === 4 ? 'flex' : 'none';
     }
 
-    function updateWeekButtons(winners) {
-      const buttons = document.querySelectorAll(".week-button");
-
-      buttons.forEach((btn, index) => {
-        const weekNum = index + 1;
-        btn.classList.remove("winner-port", "winner-starboard", "winner-undecided");
-
-        // Base text
-        let winnerText = `Week ${weekNum}`;
-
-        if (winners[weekNum - 1] === "port") {
-          btn.classList.add("winner-port");
-          winnerText = "👑<br>Port"; // use <br> for line break
-        } else if (winners[weekNum - 1] === "starboard") {
-          btn.classList.add("winner-starboard");
-          winnerText = "👑<br>Starboard"; // line break
-        } else {
-          btn.classList.add("winner-undecided");
-          winnerText = `Week ${weekNum}`;
-          if (weekNum === 4) {
-            winnerText = "Week 4<br>FINAL";
-          }
-        }
-
-        // Set the data attributes for hover switching
-        btn.dataset.weekLabel = `Week ${weekNum}`;   // text on hover
-        if (weekNum === 4 && winners[weekNum - 1] === "") {
-          btn.dataset.weekLabel = "Week 4<br>FINAL"; // keep FINAL on hover if undecided
-        }
-        btn.dataset.winnerLabel = winnerText;       // text normally
-
-        // Initial text
-        btn.innerHTML = winnerText;
-
-
-        // Hover handlers
-        btn.onmouseenter = () => { btn.innerHTML = btn.dataset.weekLabel; };
-        btn.onmouseleave = () => { btn.innerHTML = btn.dataset.winnerLabel; };
-
-        // Tooltip remains Week X
-        btn.title = `Week ${weekNum}`;
-        if (weekNum === 4) {
-          btn.title = "Week 4<br>FINAL";
-        }
-      });
-
-      equalizeButtonWidths();
-    }
-
-
-    function equalizeButtonWidths() {
-      const buttons = document.querySelectorAll('.week-button');
-      let maxWidth = 0;
-
-      buttons.forEach(btn => {
-        // Measure the button with its current content
-        const width = btn.offsetWidth;
-        if (width > maxWidth) maxWidth = width;
-      });
-
-      // Lock all buttons to maxWidth
-      buttons.forEach(btn => {
-        btn.style.width = `${maxWidth}px`;
-      });
-    }
-
-    async function fetchScores(week) {
-      highlightWeekButton(week);
-
-      const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRHRRjnYLVSi8h2vrWZQAyyh3ssVh8_G19xZ_JP2gibUOKbsBDjfXhe6VGXXVnciVgSktVwazgiYPTF/pub?gid=1908909101&single=true&output=csv';
-      const url = `${baseUrl}&_=${new Date().getTime()}`;
+    // ============================================================================
+    // DATA FETCHING AND PARSING
+    // ============================================================================
+    async function fetchScoresData() {
+      const url = `${CONFIG.spreadsheetUrl}&_=${new Date().getTime()}`;
       const response = await fetch(url);
       const csvText = await response.text();
-      const rows = csvText.split('\n').map(row => row.split(','));
-
-      const portScore = parseInt(rows[1][week], 10);
-      const starboardScore = parseInt(rows[1][week + 7], 10);
-      let displayPort = portScore;
-      let displayStarboard = starboardScore;
-      let portRange = [portScore, portScore];
-      let starboardRange = [starboardScore, starboardScore];
-
-
-      document.getElementById('team1').textContent = `Team Port: ${displayPort}`;
-      document.getElementById('team2').textContent = `Team Starboard: ${displayStarboard}`;
-      const trackWidth = window.innerWidth * 0.9;
-      document.querySelector('.race-track').style.width = `${trackWidth}px`;
-
-      const boatLength = Math.max(trackWidth * 0.1, 80);
-      document.getElementById('boat1').style.width = `${boatLength}px`;
-      document.getElementById('boat2').style.width = `${boatLength}px`;
-
-
-      // 👇 look up week settings (fallback if undefined)
-      const { minCourse = 2000, buoySpacing = 250 } = weekSettings[week] || {};
-
-      // max needed score or minCourse, whichever is larger
-      const rawMax = Math.max(portScore, starboardScore, minCourse);
-
-      // round up to nearest buoy spacing
-      const courseLength = Math.ceil(rawMax / buoySpacing) * buoySpacing;
-
-      // generate buoy distances dynamically
-      const buoyDistances = [];
-      for (let d = 0; d <= courseLength; d += buoySpacing) {
-        buoyDistances.push(d);
-      }
-
-
-      const maxPixels = trackWidth * 0.8;
-      const startOffset = trackWidth * 0.15;
-
-      // scale buoy distances to pixels
-      const scaledBuoyPositions = buoyDistances.map(
-        d => startOffset + (d / courseLength) * maxPixels
+      return csvText.split('\n').map(row => 
+        row.split(',').map(cell => cell.trim())
       );
+    }
 
-      function getBoatPixel(score, courseLength, maxPixels, startOffset, boatLength) {
-        return startOffset - boatLength + (score / courseLength) * maxPixels;
-      }
-
-      let boat1Pos = getBoatPixel(portScore, courseLength, maxPixels, startOffset, boatLength);
-      let boat2Pos = getBoatPixel(starboardScore, courseLength, maxPixels, startOffset, boatLength);
-
-
-
-      document.getElementById('boat1').style.left = `${boat1Pos}px`;
-      document.getElementById('boat2').style.left = `${boat2Pos}px`;
-
-
-      // === NEW: regenerate buoys ===
-      const raceTrack = document.querySelector('.race-track');
-
-      // remove old buoys (but keep boats + dashed line)
-      raceTrack.querySelectorAll('.buoy').forEach(b => b.remove());
-
-      // create new buoys
-      scaledBuoyPositions.forEach((x, i) => {
-        // top buoy
-        const top = document.createElement('div');
-        top.className = 'buoy';
-        top.style.position = 'absolute';
-        top.style.left = `${x}px`;
-        top.style.top = '0px';
-        top.style.width = '10px';
-        top.style.height = '10px';
-        top.style.background = 'blue';
-        top.style.borderRadius = '50%';
-
-        // number label above
-        const topLabel = document.createElement('div');
-        topLabel.textContent = buoyDistances[i];
-        topLabel.style.position = 'absolute';
-        topLabel.style.left = '12px';
-        topLabel.style.top = '-12px';
-        topLabel.style.fontSize = '12px';
-        top.appendChild(topLabel);
-
-        raceTrack.appendChild(top);
-
-        // bottom buoy
-        const bottom = top.cloneNode(true);
-        bottom.style.top = '137px';
-        const bottomLabel = bottom.querySelector('div');
-        bottomLabel.style.top = '12px'; // inside buoy
-        raceTrack.appendChild(bottom);
+    function parseTeamScores(rows, week) {
+      const teamData = [];
+      const headers = rows[0];
+      const totalsRow = rows[1];
+      
+      // Find team columns dynamically
+      // Expected format: "Team: TEAMNAME" in row 0
+      headers.forEach((header, colIndex) => {
+        if (header.toLowerCase().includes('team:')) {
+          const teamName = header.replace(/team:/i, '').trim();
+          const team = CONFIG.teams.find(t => 
+            t.name.toLowerCase() === teamName.toLowerCase()
+          );
+          
+          if (team) {
+            // Week score is at column offset 'week' from team name column
+            const weekScore = parseInt(totalsRow[colIndex + week], 10) || 0;
+            
+            // Get individual player scores
+            const players = [];
+            for (let r = 3; r < rows.length; r++) {
+              const playerName = rows[r][colIndex];
+              const playerScore = parseInt(rows[r][colIndex + week], 10) || 0;
+              if (playerName && playerScore > 0) {
+                players.push({ name: playerName, score: playerScore });
+              }
+            }
+            
+            players.sort((a, b) => b.score - a.score);
+            
+            teamData.push({
+              name: teamName,
+              color: team.color,
+              boatImage: team.boatImage,
+              score: weekScore,
+              topPlayers: players.slice(0, 3)
+            });
+          }
+        }
       });
+      
+      return teamData;
+    }
 
-      // Extract top 3 players for Port
-      let portPlayers = rows.slice(3).map(row => ({
-        name: row[0],
-        points: parseInt(row[week], 10) || 0
-      })).filter(player => player.name).sort((a, b) => b.points - a.points).slice(0, 3);
-
-      // Extract top 3 players for Starboard
-      let starboardPlayers = rows.slice(3).map(row => ({
-        name: row[7],
-        points: parseInt(row[week + 7], 10) || 0
-      })).filter(player => player.name).sort((a, b) => b.points - a.points).slice(0, 3);
-
-
-      const medals = ['🥇', '🥈', '🥉'];
-
-      // Display top 3 players for Port
-      const portTop3 = document.getElementById('portTop3');
-      portTop3.innerHTML = `<h3>Port Leaderboard</h3>` +
-        portPlayers.map((player, index) => `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`).join('');
-
-      // Display top 3 players for Starboard
-      const starboardTop3 = document.getElementById('starboardTop3');
-      starboardTop3.innerHTML = `<h3>Starboard Leaderboard</h3>` +
-        starboardPlayers.map((player, index) => `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`).join('');
-        if (week === 5) {
-      const portBase = Math.floor(portScore / 100) * 100;
-      const starBase = Math.floor(starboardScore / 100) * 100;
-
-      const portHundreds = Math.floor(portBase / 100);
-      const starHundreds = Math.floor(starBase / 100);
-
-      function updateWeek5() {
-        // --- Boats ---
-        const portTens = jitterDigit(portBase);
-        const starTens = jitterDigit(starBase);
-
-        const displayPort = portScore;//`${portHundreds}??`;
-        const displayStarboard = starboardScore;//`${starHundreds}??`;
-
-        document.getElementById('team1').textContent = `Team Port: ${displayPort}`;
-        document.getElementById('team2').textContent = `Team Starboard: ${displayStarboard}`;
-
-        // --- Leaderboard jitter ---
-        const portTop3Container = document.getElementById('portTop3');
-        const starboardTop3Container = document.getElementById('starboardTop3');
-
-        const medals = ['🥇', '🥈', '🥉'];
-
-        const jitterPortPlayers = portPlayers.map(p => {
-          const base = Math.floor(p.points / 100) * 100;
-          const hundreds = Math.floor(base / 100);
-          return  { ...p, points: p.points };//{ ...p, points: `${hundreds}??` };
-        });
-
-        const jitterStarboardPlayers = starboardPlayers.map(p => {
-          const base = Math.floor(p.points / 100) * 100;
-          const hundreds = Math.floor(base / 100);
-          return { ...p, points: p.points };//{ ...p, points: `${hundreds}??` };
-        });
-
-        portTop3Container.innerHTML = `<h3>Port Leaderboard</h3>` +
-          jitterPortPlayers.map((player, index) =>
-            `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`
-          ).join('');
-
-        starboardTop3Container.innerHTML = `<h3>Starboard Leaderboard</h3>` +
-          jitterStarboardPlayers.map((player, index) =>
-            `<p>${medals[index]} ${player.name}: ${player.points} points ${medals[index]}</p>`
-          ).join('');
+    function determineWeekWinners(rows) {
+      const winners = {};
+      const headers = rows[0];
+      const totalsRow = rows[1];
+      
+      // Determine number of weeks from headers
+      const teamCols = headers.reduce((acc, h, i) => {
+        if (h.toLowerCase().includes('team:')) acc.push(i);
+        return acc;
+      }, []);
+      
+      if (teamCols.length === 0) return winners;
+      
+      // Count weeks from first team section
+      const firstTeamCol = teamCols[0];
+      let weekCount = 0;
+      for (let i = firstTeamCol + 1; i < headers.length; i++) {
+        if (headers[i].toLowerCase().includes('week')) weekCount++;
+        if (headers[i].toLowerCase().includes('total')) break;
       }
+      
+      numWeeks = weekCount;
+      
+      // Find winner for each week
+      for (let w = 1; w <= weekCount; w++) {
+        let maxScore = -1;
+        let winningTeam = null;
+        let isTie = false;
+        
+        teamCols.forEach(colIndex => {
+          const teamName = headers[colIndex].replace(/team:/i, '').trim();
+          const score = parseInt(totalsRow[colIndex + w], 10) || 0;
+          
+          if (score > maxScore) {
+            maxScore = score;
+            winningTeam = teamName;
+            isTie = false;
+          } else if (score === maxScore) {
+            isTie = true;
+          }
+        });
+        
+        winners[w] = isTie ? null : winningTeam;
+      }
+      
+      return winners;
+    }
 
-      // Start or continue the 1-second loop
-      updateWeek5();
-      if (!window.week5Interval) {
-        window.week5Interval = setInterval(updateWeek5, 3000);
+    // ============================================================================
+    // RACE TRACK RENDERING
+    // ============================================================================
+    function renderRaceTrack(teamData, week) {
+      const track = document.getElementById('raceTrack');
+      const trackWidth = track.offsetWidth;
+      
+      // Calculate course length
+      const weekSetting = CONFIG.weekSettings[week] || { minCourse: 2000, buoySpacing: 250 };
+      const maxScore = Math.max(...teamData.map(t => t.score), weekSetting.minCourse);
+      const courseLength = Math.ceil(maxScore / weekSetting.buoySpacing) * weekSetting.buoySpacing;
+      
+      // Clear existing content
+      track.innerHTML = '';
+      
+      // Update track height based on number of teams
+      const laneHeight = 80;
+      track.style.height = `${laneHeight * teamData.length + 20}px`;
+      
+      // Create lane dividers
+      for (let i = 1; i < teamData.length; i++) {
+        const divider = document.createElement('div');
+        divider.className = 'lane-divider';
+        divider.style.top = `${i * laneHeight}px`;
+        track.appendChild(divider);
+      }
+      
+      // Create buoys
+      const buoyPositions = [];
+      for (let d = 0; d <= courseLength; d += weekSetting.buoySpacing) {
+        buoyPositions.push(d);
+      }
+      
+      const maxPixels = trackWidth * 0.8;
+      const startOffset = trackWidth * 0.1;
+      
+      buoyPositions.forEach((distance, i) => {
+        const x = startOffset + (distance / courseLength) * maxPixels;
+        
+        // Top buoy
+        const topBuoy = createBuoy(x, 5, distance, 'top');
+        track.appendChild(topBuoy);
+        
+        // Bottom buoy
+        const bottomBuoy = createBuoy(x, laneHeight * teamData.length + 5, distance, 'bottom');
+        track.appendChild(bottomBuoy);
+      });
+      
+      // Create boats
+      teamData.forEach((team, index) => {
+        const boat = document.createElement('img');
+        boat.className = 'boat';
+        boat.src = team.boatImage;
+        boat.alt = `Team ${team.name}`;
+        boat.style.top = `${index * laneHeight + 10}px`;
+        
+        const boatLength = Math.max(trackWidth * 0.08, 80);
+        boat.style.width = `${boatLength}px`;
+        
+        const boatPos = startOffset - boatLength + (team.score / courseLength) * maxPixels;
+        boat.style.left = `${boatPos}px`;
+        
+        track.appendChild(boat);
+      });
+    }
+
+    function createBuoy(x, y, distance, position) {
+      const buoy = document.createElement('div');
+      buoy.className = 'buoy';
+      buoy.style.left = `${x}px`;
+      buoy.style.top = `${y}px`;
+      
+      const label = document.createElement('div');
+      label.className = 'buoy-label';
+      label.textContent = distance;
+      label.style.top = position === 'top' ? '-15px' : '15px';
+      
+      buoy.appendChild(label);
+      return buoy;
+    }
+
+    // ============================================================================
+    // TEAM DISPLAY RENDERING
+    // ============================================================================
+    function renderTeamsDisplay(teamData) {
+      const container = document.getElementById('teamsContainer');
+      container.innerHTML = '';
+      
+      teamData.forEach(team => {
+        const section = document.createElement('div');
+        section.className = 'team-section';
+        
+        const score = document.createElement('div');
+        score.className = 'team-score';
+        score.style.color = team.color;
+        score.textContent = `Team ${team.name}: ${team.score}`;
+        
+        const leaderboard = document.createElement('div');
+        leaderboard.className = 'leaderboard';
+        
+        const title = document.createElement('h3');
+        title.textContent = `${team.name} Leaderboard`;
+        leaderboard.appendChild(title);
+        
+        const medals = ['🥇', '🥈', '🥉'];
+        team.topPlayers.forEach((player, index) => {
+          const p = document.createElement('p');
+          p.textContent = `${medals[index]} ${player.name}: ${player.score} points ${medals[index]}`;
+          leaderboard.appendChild(p);
+        });
+        
+        section.appendChild(score);
+        section.appendChild(leaderboard);
+        container.appendChild(section);
+      });
+    }
+
+    // ============================================================================
+    // WEEK BUTTONS RENDERING
+    // ============================================================================
+    function renderWeekButtons() {
+      const container = document.getElementById('weekButtons');
+      container.innerHTML = '';
+      
+      for (let w = 1; w <= numWeeks; w++) {
+        const button = document.createElement('button');
+        button.className = 'week-button';
+        button.id = `week${w}`;
+        
+        const isWinner = weekWinners[w];
+        const isFinal = w === numWeeks;
+        
+        if (isWinner) {
+          button.classList.add('winner');
+          button.innerHTML = `👑<br>${isWinner}`;
+          button.title = `Week ${w} - Winner: ${isWinner}`;
+        } else {
+          button.textContent = isFinal ? `Week ${w}\nFINAL` : `Week ${w}`;
+          button.title = `Week ${w}`;
+        }
+        
+        if (w === currentWeek) {
+          button.classList.add('active');
+        }
+        
+        button.onclick = () => loadWeek(w);
+        container.appendChild(button);
       }
     }
 
+    // ============================================================================
+    // MAIN DISPLAY LOGIC
+    // ============================================================================
+    async function loadWeek(week) {
+      currentWeek = week;
+      
+      try {
+        document.body.classList.add('loading');
+        
+        const rows = await fetchScoresData();
+        const teamData = parseTeamScores(rows, week);
+        weekWinners = determineWeekWinners(rows);
+        
+        renderRaceTrack(teamData, week);
+        renderTeamsDisplay(teamData);
+        renderWeekButtons();
+        updateCountdownVisibility();
+        
+        document.body.classList.remove('loading');
+      } catch (error) {
+        console.error('Error loading scores:', error);
+        document.body.classList.remove('loading');
       }
+    }
 
-    // Default to Week 1 on page load
-    fetchScores(week);
-    updateWeekButtons(winners);
+    // ============================================================================
+    // AUTO-REFRESH
+    // ============================================================================
+    function startAutoRefresh() {
+      if (refreshIntervalId) {
+        clearInterval(refreshIntervalId);
+      }
+      
+      refreshIntervalId = setInterval(() => {
+        loadWeek(currentWeek);
+      }, CONFIG.refreshInterval);
+    }
 
-    // Rerun the query every 30 seconds
-    setInterval(() => {
-      const activeWeek = document.querySelector('.active-week')?.id.replace('week', '') || 1;
-      fetchScores(parseInt(activeWeek, 10));
-    }, 15000);
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+    function init() {
+      // Start countdown
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
+      
+      // Load initial week
+      loadWeek(CONFIG.defaultWeek);
+      
+      // Start auto-refresh
+      startAutoRefresh();
+    }
+
+    // Start when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   </script>
 </body>
 
