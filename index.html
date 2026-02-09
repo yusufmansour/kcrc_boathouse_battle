@@ -246,6 +246,7 @@
       <span id="seconds">00</span>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
     // ============================================================================
@@ -332,24 +333,17 @@
     // DATA FETCHING AND PARSING
     // ============================================================================
     async function fetchScoresData() {
-      // Add multiple cache-busting parameters to ensure fresh data
-      const timestamp = new Date().getTime();
-      const random = Math.random();
-      const url = `${CONFIG.spreadsheetUrl}&_t=${timestamp}&_r=${random}`;
-      
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
+      const timestamp = Date.now();
+      const url = `${CONFIG.spreadsheetUrl}&_t=${timestamp}`;
 
-        }
-      });
-      
+      const response = await fetch(url, { cache: 'no-store' });
       const csvText = await response.text();
-      return csvText.split('\n').map(row => 
-        row.split(',').map(cell => cell.trim())
-      );
+
+      const parsed = Papa.parse(csvText, {
+        skipEmptyLines: true
+      });
+
+      return parsed.data;
     }
 
     function parseTeamScores(rows, week) {
