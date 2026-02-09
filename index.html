@@ -275,10 +275,10 @@
       // Team configuration - names should match the color from CSV headers
       // CSV has: "Team: BLUE", "Team: GREEN", "Team: PURPLE", "Team: RED"
       teams: [
-        { name: 'Team Blue', color: '#0066cc', boatImage: 'media/rowing_shell_blue.png' },
-        { name: 'Team Green', color: '#167401', boatImage: 'media/rowing_shell_green.png' },
-        { name: 'Team Purple', color: '#9900cc', boatImage: 'media/rowing_shell_purple.png' },
-        { name: 'Team Red', color: '#b70000', boatImage: 'media/rowing_shell_red.png' }
+        { name: 'Blue Blades', color: '#0066cc', boatImage: 'media/rowing_shell_blue.png' },
+        { name: 'Green Eggs and Hamstrings', color: '#167401', boatImage: 'media/rowing_shell_green.png' },
+        { name: 'Grape Stroke', color: '#9900cc', boatImage: 'media/rowing_shell_purple.png' },
+        { name: 'Red, Set, Row!', color: '#b70000', boatImage: 'media/rowing_shell_red.png' }
       ],
       
       // Manual week winners (set team name or null for auto-calculate from scores)
@@ -592,7 +592,7 @@
         leaderboard.className = 'leaderboard';
         
         const title = document.createElement('h3');
-        title.textContent = `${team.name} Leaderboard`;
+        title.textContent = `Leaderboard`;
         leaderboard.appendChild(title);
         
         const medals = ['🥇', '🥈', '🥉'];
