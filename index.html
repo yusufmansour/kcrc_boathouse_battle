@@ -143,8 +143,8 @@
     }
 
     .week-button.winner {
-      background: #ffd700;
-      border-color: #daa520;
+      background: var(--team-color, #ffd700);
+      border-color: var(--team-color, #daa520);
       font-weight: bold;
       color: white;
     }
@@ -446,37 +446,10 @@
       
       numWeeks = weekCount;
       
-      // Determine winners: use manual config if set, otherwise auto-calculate
+      // Determine winners: manual config only
       for (let w = 1; w <= weekCount; w++) {
-        // Check if manual winner is configured
         const manualWinner = CONFIG.manualWinners && CONFIG.manualWinners[w];
-        if (manualWinner !== undefined && manualWinner !== null && String(manualWinner).trim() !== '') {
-          winners[w] = manualWinner;
-          continue;
-        }
-
-        // Auto-calculate from scores
-        {
-          // Auto-calculate from scores
-          let maxScore = -1;
-          let winningTeam = null;
-          let isTie = false;
-          
-          teamCols.forEach(colIndex => {
-            const teamName = headers[colIndex].replace(/team:/i, '').trim();
-            const score = parseInt(totalsRow[colIndex + w], 10) || 0;
-            
-            if (score > maxScore) {
-              maxScore = score;
-              winningTeam = teamName;
-              isTie = false;
-            } else if (score === maxScore && score > 0) {
-              isTie = true;
-            }
-          });
-          
-          winners[w] = isTie ? null : winningTeam;
-        }
+        winners[w] = manualWinner && String(manualWinner).trim() !== '' ? manualWinner : null;
       }
       
       return winners;
@@ -662,10 +635,8 @@
           });
           
           button.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('active')) {
-              this.style.backgroundColor = '#ffd700';
-              this.style.borderColor = '#daa520';
-            }
+            this.style.backgroundColor = teamColor;
+            this.style.borderColor = teamColor;
           });
         } else {
           button.textContent = isFinal ? `Week ${w}\nFINAL` : `Week ${w}`;
