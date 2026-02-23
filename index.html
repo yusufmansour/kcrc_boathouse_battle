@@ -263,12 +263,12 @@
       weekSettings: {
         1: { minCourse: 1000, buoySpacing: 250 },
         2: { minCourse: 2000, buoySpacing: 250 },
-        3: { minCourse: 2000, buoySpacing: 250 },
+        3: { minCourse: 1000, buoySpacing: 125 },
         //4: { minCourse: 10000, buoySpacing: 1000 } // FINAL week
       },
       
       // Default week to display on load
-      defaultWeek: 2,
+      defaultWeek: 3,
       
       // Refresh interval in milliseconds
       refreshInterval: 15000,
@@ -285,8 +285,8 @@
       // Manual week winners (set team name or null for auto-calculate from scores)
       // Team name must match exactly (case-insensitive) with teams array above
       manualWinners: {
-        1: '',      // Week 1 winner (currently has 53 points)
-        2: '',              // Week 2 winner - auto-calculate
+        1: 'Green Eggs and Hamstrings',      // Week 1 winner (currently has 53 points)
+        2: 'Green Eggs and Hamstrings',              // Week 2 winner - auto-calculate
         3: '',              // Week 3 winner - auto-calculate
         //4: ''               // Week 4 - null to auto-calculate
       }
@@ -449,9 +449,14 @@
       // Determine winners: use manual config if set, otherwise auto-calculate
       for (let w = 1; w <= weekCount; w++) {
         // Check if manual winner is configured
-        if (CONFIG.manualWinners && CONFIG.manualWinners[w] !== undefined && CONFIG.manualWinners[w] !== null) {
-          winners[w] = CONFIG.manualWinners[w];
-        } else {
+        const manualWinner = CONFIG.manualWinners && CONFIG.manualWinners[w];
+        if (manualWinner !== undefined && manualWinner !== null && String(manualWinner).trim() !== '') {
+          winners[w] = manualWinner;
+          continue;
+        }
+
+        // Auto-calculate from scores
+        {
           // Auto-calculate from scores
           let maxScore = -1;
           let winningTeam = null;
@@ -477,10 +482,23 @@
       return winners;
     }
 
+    // Normalize team names from manual config or sheet headers to CONFIG entries
+    function findConfigTeam(teamName) {
+      if (!teamName) return null;
+      const normalized = teamName.trim().toLowerCase();
+      const colorKeywords = ['blue', 'green', 'purple', 'red'];
+      return CONFIG.teams.find(team => {
+        const lowerName = team.name.toLowerCase();
+        const colorWord = colorKeywords.find(word => lowerName.includes(word));
+        return lowerName === normalized ||
+          lowerName.includes(normalized) ||
+          normalized.includes(lowerName) ||
+          (colorWord && normalized.includes(colorWord));
+      }) || null;
+    }
+
     function getTeamColor(teamName) {
-      const team = CONFIG.teams.find(t => 
-        t.name.toLowerCase() === teamName.toLowerCase()
-      );
+      const team = findConfigTeam(teamName);
       return team ? team.color : '#666';
     }
 
@@ -624,12 +642,14 @@
         button.id = `week${w}`;
         
         const winningTeam = weekWinners[w];
+        const resolvedTeam = findConfigTeam(winningTeam);
+        const displayWinnerName = resolvedTeam ? resolvedTeam.name : winningTeam;
         const isFinal = false //w === numWeeks;
         
         if (winningTeam) {
           button.classList.add('winner');
-          button.innerHTML = `👑<br>${winningTeam}`;
-          button.title = `Week ${w} - Winner: ${winningTeam}`;
+          button.innerHTML = `👑<br>${displayWinnerName}`;
+          button.title = `Week ${w} - Winner: ${displayWinnerName}`;
           
           // Set winning team color
           const teamColor = getTeamColor(winningTeam);
